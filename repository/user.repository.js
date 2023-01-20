@@ -11,6 +11,7 @@ class userRepository {
     email,
     password,
     date_of_birth,
+    address,
     phone,
   }) {
     try {
@@ -20,6 +21,7 @@ class userRepository {
         email: email,
         password: password,
         date_of_birth: date_of_birth,
+        address: address,
         phone: phone,
       });
       return user;

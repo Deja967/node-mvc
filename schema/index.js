@@ -29,7 +29,7 @@ db.sequelize = sequelize;
 db.sequelize = sequelize;
 
 db.user = require('./user.schema')(sequelize, Sequelize.DataTypes);
-db.address = require('./userAddress.schema')(sequelize, Sequelize.DataTypes);
+db.address = require('./user.address.schema')(sequelize, Sequelize.DataTypes);
 
 db.user.hasMany(db.address);
 db.address.belongsTo(db.user);

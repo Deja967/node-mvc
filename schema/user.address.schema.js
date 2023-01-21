@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     zip_code: {
       type: DataTypes.INTEGER,
     },
+    addressId: {
+      type: DataTypes.STRING,
+    },
   });
   return Address;
 };

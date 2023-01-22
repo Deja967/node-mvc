@@ -17,6 +17,17 @@ class userRepository {
     phone,
   }) {
     try {
+      const errMsg = 'this email already exist';
+      const checkUser = await User.findOne({
+        where: {
+          email: email,
+        },
+      }).then((user) => {
+        if (user) {
+          return res.status(409).send({ message: errMsg });
+        }
+      });
+
       const id = short.generate();
       const user = await User.create({
         first_name: first_name,

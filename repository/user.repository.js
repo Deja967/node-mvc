@@ -44,7 +44,7 @@ class userRepository {
         city: address[0].city,
         state: address[0].state,
         zip_code: address[0].zip,
-        addressId: id,
+        uaid: id,
         userInformationId: user.id,
       });
       return user;

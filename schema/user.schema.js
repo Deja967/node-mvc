@@ -1,7 +1,14 @@
 const { Sequelize } = require('sequelize');
+const short = require('short-uuid');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('userInformation', {
+    id: {
+      allowNull: false,
+      defaultValue: short.generate(),
+      primaryKey: true,
+      type: DataTypes.STRING,
+    },
     first_name: {
       type: DataTypes.STRING,
     },

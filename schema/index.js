@@ -32,6 +32,10 @@ db.user = require('./user.schema')(sequelize, Sequelize.DataTypes);
 db.address = require('./user.address.schema')(sequelize, Sequelize.DataTypes);
 
 db.user.hasMany(db.address);
+// db.user.hasMany(db.address, {
+//   //uaid -> userAddressId
+//   foreignKey: 'uaid',
+// });
 db.address.belongsTo(db.user);
 
 module.exports = db;

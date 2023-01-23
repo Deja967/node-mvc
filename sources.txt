@@ -1,2 +1,3 @@
 https://express-validator.github.io/docs/
 https://sequelize.org/
+https://rapidapi.com/blog/api-glossary/parameters/query/

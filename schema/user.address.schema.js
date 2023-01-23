@@ -24,9 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     zip_code: {
       type: DataTypes.INTEGER,
     },
-    uaid: {
-      type: DataTypes.STRING,
-    },
   });
   return Address;
 };

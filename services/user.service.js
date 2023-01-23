@@ -2,6 +2,7 @@ const userRepository = require('../repository/user.repository');
 const newUserResponse = require('../domain/create.user.response');
 const getUserResponse = require('../domain/get.user.response');
 const db = require('../schema');
+const getUserAddress = require('../domain/get.user.address');
 
 class userService {
   constructor() {
@@ -36,26 +37,34 @@ class userService {
       console.log(err);
     }
   }
+
+  async getAllUserInfo({ email }) {
+    try {
+      const response = await this.repository.fetchAllUserInfo({
+        email,
+      });
+      const responseBody = new getUserResponse(
+        response.user.dataValues.first_name,
+        response.user.dataValues.last_name,
+        response.user.dataValues.email,
+        response.user.dataValues.password,
+        response.user.dataValues.date_of_birth,
+        [
+          new getUserAddress(
+            response.userAddress.dataValues.address,
+            response.userAddress.dataValues.unit,
+            response.userAddress.dataValues.city,
+            response.userAddress.dataValues.state,
+            response.userAddress.dataValues.zip_code
+          ),
+        ],
+        response.user.dataValues.phone
+      );
+
+      return responseBody;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
-
-// const responseBody = new userResponse(
-//   response.dataValues.first_name,
-//   response.dataValues.last_name,
-//   response.dataValues.email,
-//   response.dataValues.password,
-//   response.dataValues.date_of_birth,
-//   response.dataValues.address,
-//   response.dataValues.phone
-// );
-
-// const data = {
-//   first_name: responseBody.getFirstName(),
-//   last_name: responseBody.getLastName(),
-//   email: responseBody.getEmail(),
-//   password: responseBody.getPassword(),
-//   date_of_birth: responseBody.getDateOfBirth(),
-//   address: responseBody.getAddress(),
-//   phone: responseBody.getPhone(),
-// };
-
 module.exports = userService;

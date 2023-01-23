@@ -1,3 +1,4 @@
+const getUserAddress = require('../domain/get.user.address');
 module.exports = class getNewUser {
   constructor(
     first_name,
@@ -5,7 +6,7 @@ module.exports = class getNewUser {
     email,
     password,
     date_of_birth,
-    address,
+    address = [new getUserAddress()],
     phone
   ) {
     this.first_name = first_name;

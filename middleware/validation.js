@@ -21,7 +21,7 @@ const signInValidator = [
   check('email', 'Please include a valid email')
     .isEmail()
     .normalizeEmail({ gmail_remove_dots: true }),
-  check('password').exists().withMessage('Password is required'),
+  check('password').notEmpty().withMessage('Password is required'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())

@@ -1,6 +1,11 @@
 const db = require('../schema');
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const config = require('../config/auth.config');
+const jwt = require('jsonwebtoken');
+
 const short = require('short-uuid');
+const constants = require('../utils/constants');
 
 const User = db.user;
 const Address = db.address;
@@ -19,7 +24,7 @@ class userRepository {
       first_name: first_name,
       last_name: last_name,
       email: email,
-      password: password,
+      password: bcrypt.hashSync(password, saltRounds),
       date_of_birth: date_of_birth,
       phone: phone,
     });
@@ -35,6 +40,23 @@ class userRepository {
   }
   catch(err) {
     console.log(err);
+  }
+
+  async getUserInfo({ email, password, res }) {
+    try {
+      const user = await User.findOne({
+        where: {
+          email: email,
+        },
+      });
+      const isPasswordValid = bcrypt.compareSync(password, user.password);
+      if (!user || !isPasswordValid) {
+        return constants.err;
+      }
+      return user;
+    } catch (err) {
+      console.log(err);
+    }
   }
   async fetchAllUserInfo({ email }) {
     try {
@@ -52,6 +74,22 @@ class userRepository {
         user,
         userAddress,
       };
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async fetchAllUsers() {
+    try {
+      const user = await User.findAll({ order: [['createdAt', 'ASC']] });
+      const userAddress = await Address.findAll({
+        order: [['createdAt', 'ASC']],
+      });
+      const data = {
+        user,
+        userAddress,
+      };
+
       return data;
     } catch (err) {
       console.log(err);

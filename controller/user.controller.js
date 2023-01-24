@@ -38,4 +38,16 @@ router.post(
   }
 );
 
+router.get(constants.getFullUser, async (req, res) => {
+  const email = req.query.email;
+  try {
+    const response = await service.getAllUserInfo({
+      email,
+    });
+    res.status(200).send(response);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;

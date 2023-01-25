@@ -93,29 +93,34 @@ class userService {
   async getAllUsers() {
     try {
       const response = await this.repository.fetchAllUsers();
-      for (var i = 0; i <= response.length; i++) {
-        // const responseBody = new getUserResponse(
-        //   response.user[i].dataValues.first_name,
-        //   response.user[i].dataValues.last_name,
-        //   response.user[i].dataValues.email,
-        //   response.user[i].dataValues.password,
-        //   response.user[i].dataValues.date_of_birth,
-        //   [
-        //     new getUserAddress(
-        //       response.userAddress[i].dataValues.address,
-        //       response.userAddress[i].dataValues.unit,
-        //       response.userAddress[i].dataValues.city,
-        //       response.userAddress[i].dataValues.state,
-        //       response.userAddress[i].dataValues.zip_code
-        //     ),
-        //   ],
-        //   response.user[i].dataValues.phone
-        // );
-        // return [responseBody];
-      }
+      // Note for future use
+      // let names = response.map((user) => user.first_name);
+      // console.log(names);
+      return response;
     } catch (err) {
       console.log(err);
     }
   }
 }
 module.exports = userService;
+
+// let usersList = JSON.parse(response);
+// let newUsers = usersList.map((user) => {
+//   let addresses = user.addresses.map((address) => {
+//     return new Address(
+//       address.address,
+//       address.unit,
+//       address.city,
+//       address.state
+//     );
+//   });
+//   return new User(
+//     user.first_name,
+//     user.last_name,
+//     user.email,
+//     user.date_of_birth,
+//     user.phone,
+//     user.last_login,
+//     addresses
+//   );
+// });

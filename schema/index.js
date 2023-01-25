@@ -38,4 +38,4 @@ db.user.hasMany(db.address);
 // });
 db.address.belongsTo(db.user);
 
-module.exports = db;
+module.exports = { db, sequelize };

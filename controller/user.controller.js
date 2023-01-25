@@ -77,11 +77,11 @@ router.get(constants.getFullUser, verifyToken, async (req, res) => {
   }
 });
 
-router.get(constants.getAllUsers, verifyToken, async (req, res) => {
+router.get(constants.getAllUsers, async (req, res) => {
   try {
     const response = await service.getAllUsers();
-    console.log('response :', response);
-    // res.status(200).send(response);
+    //might cause issues on the front end with how its sent back and getting back specific data
+    res.status(200).send({ data: response });
   } catch (err) {
     console.log(err);
   }

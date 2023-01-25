@@ -7,8 +7,12 @@ const jwt = require('jsonwebtoken');
 const short = require('short-uuid');
 const constants = require('../utils/constants');
 
-const User = db.user;
-const Address = db.address;
+const User = db.db.user;
+const Address = db.db.address;
+const sequelize = db.sequelize;
+const { QueryTypes } = require('sequelize');
+const Sequelize = require('sequelize');
+const { user } = require('../config/db.config');
 
 class userRepository {
   async createNewUser({
@@ -79,17 +83,56 @@ class userRepository {
       console.log(err);
     }
   }
+
   async fetchAllUsers() {
     try {
-      const user = await User.findAll({ order: [['createdAt', 'ASC']] });
-      const userAddress = await Address.findAll({
-        order: [['createdAt', 'ASC']],
+      const userJoin = await User.findAll({
+        attributes: [
+          'id',
+          'first_name',
+          'last_name',
+          'email',
+          'date_of_birth',
+          'phone',
+          'last_login',
+        ],
+        include: {
+          model: Address,
+          as: 'addresses',
+          attributes: ['address', 'unit', 'city', 'state', 'zip_code'],
+        },
       });
-      const data = {
-        user,
-        userAddress,
-      };
-
+      const newData = userJoin.map((person) => {
+        const {
+          first_name,
+          last_name,
+          email,
+          date_of_birth,
+          phone,
+          last_login,
+        } = person;
+        const addresses = person.addresses.map((address) => {
+          return {
+            address: address.address,
+            unit: address.unit,
+            city: address.city,
+            state: address.state,
+            zip: address.zip_code,
+          };
+        });
+        return [
+          {
+            first_name,
+            last_name,
+            email,
+            date_of_birth,
+            phone,
+            last_login,
+            addresses,
+          },
+        ];
+      });
+      const data = JSON.parse(JSON.stringify(newData));
       return data;
     } catch (err) {
       console.log(err);

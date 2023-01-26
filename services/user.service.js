@@ -3,6 +3,10 @@ const newUserResponse = require('../domain/create.user.response');
 const getUserResponse = require('../domain/get.user.response');
 const db = require('../schema');
 const getUserAddress = require('../domain/get.user.address');
+const userLoginResponse = require('../domain/login.user.response');
+
+const constants = require('../utils/constants');
+const { add } = require('lodash');
 
 class userService {
   constructor() {
@@ -38,30 +42,65 @@ class userService {
     }
   }
 
+  async signIn({ email, password, res }) {
+    try {
+      const response = await this.repository.getUserInfo({
+        email,
+        password,
+      });
+      if (response == constants.err) {
+        return response;
+      }
+      const userLoginBody = new userLoginResponse(email, '23123', '1231');
+      const data = {
+        userLoginBody,
+        response,
+      };
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async getAllUserInfo({ email }) {
     try {
       const response = await this.repository.fetchAllUserInfo({
         email,
       });
+      if (response == constants.doesUserExist) {
+        return response;
+      }
+      let addresses = response.userAddress.map((address) => {
+        return new getUserAddress(
+          address.address,
+          address.unit,
+          address.city,
+          address.state,
+          address.zip_code
+        );
+      });
       const responseBody = new getUserResponse(
         response.user.dataValues.first_name,
         response.user.dataValues.last_name,
         response.user.dataValues.email,
-        response.user.dataValues.password,
         response.user.dataValues.date_of_birth,
-        [
-          new getUserAddress(
-            response.userAddress.dataValues.address,
-            response.userAddress.dataValues.unit,
-            response.userAddress.dataValues.city,
-            response.userAddress.dataValues.state,
-            response.userAddress.dataValues.zip_code
-          ),
-        ],
+        addresses,
         response.user.dataValues.phone
       );
 
       return responseBody;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async getAllUsers() {
+    try {
+      const response = await this.repository.fetchAllUsers();
+      // Note for future use
+      // let names = response.map((user) => user.first_name);
+      // console.log(names);
+      return response;
     } catch (err) {
       console.log(err);
     }

@@ -4,7 +4,6 @@ module.exports = class getNewUser {
     first_name,
     last_name,
     email,
-    password,
     date_of_birth,
     address = [new getUserAddress()],
     phone
@@ -12,7 +11,6 @@ module.exports = class getNewUser {
     this.first_name = first_name;
     this.last_name = last_name;
     this.email = email;
-    this.password = password;
     this.date_of_birth = date_of_birth;
     this.address = address;
     this.phone = phone;
@@ -40,14 +38,6 @@ module.exports = class getNewUser {
 
   setEmail(email) {
     return this.email;
-  }
-
-  getPassword() {
-    return this.password;
-  }
-
-  setPassword(password) {
-    return this.password;
   }
 
   getDateOfBirth() {

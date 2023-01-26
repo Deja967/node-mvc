@@ -1,18 +1,12 @@
 const db = require('../schema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const config = require('../config/auth.config');
-const jwt = require('jsonwebtoken');
 
 const short = require('short-uuid');
 const constants = require('../utils/constants');
 
 const User = db.db.user;
 const Address = db.db.address;
-const sequelize = db.sequelize;
-const { QueryTypes } = require('sequelize');
-const Sequelize = require('sequelize');
-const { user } = require('../config/db.config');
 
 class userRepository {
   async createNewUser({
@@ -47,12 +41,14 @@ class userRepository {
   }
 
   async getUserInfo({ email, password, res }) {
+    console.log(email, password);
     try {
       const user = await User.findOne({
         where: {
           email: email,
         },
       });
+
       const isPasswordValid = bcrypt.compareSync(password, user.password);
       if (!user || !isPasswordValid) {
         return constants.err;
@@ -69,15 +65,20 @@ class userRepository {
           email: email,
         },
       });
-      const userAddress = await Address.findOne({
+      if (!user) {
+        return constants.doesUserExist;
+      }
+      const userAddress = await Address.findAll({
         where: {
           userInformationId: user.dataValues.id,
         },
+        order: [['createdAt', 'DESC']],
       });
       const data = {
         user,
         userAddress,
       };
+      // console.log(data);
       return data;
     } catch (err) {
       console.log(err);
@@ -99,8 +100,16 @@ class userRepository {
         include: {
           model: Address,
           as: 'addresses',
-          attributes: ['address', 'unit', 'city', 'state', 'zip_code'],
+          attributes: [
+            'address',
+            'unit',
+            'city',
+            'state',
+            'zip_code',
+            'createdAt',
+          ],
         },
+        order: [[{ model: Address, as: 'addresses' }, 'createdAt', 'DESC']],
       });
       const newData = userJoin.map((person) => {
         const {
@@ -133,7 +142,11 @@ class userRepository {
         ];
       });
       const data = JSON.parse(JSON.stringify(newData));
-      return data;
+
+      const jsonWithoutBrackets = data.map((innerArray) => innerArray[0]);
+      console.log(jsonWithoutBrackets);
+
+      return jsonWithoutBrackets;
     } catch (err) {
       console.log(err);
     }

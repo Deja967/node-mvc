@@ -6,6 +6,7 @@ const getUserAddress = require('../domain/get.user.address');
 const userLoginResponse = require('../domain/login.user.response');
 
 const constants = require('../utils/constants');
+const { add } = require('lodash');
 
 class userService {
   constructor() {
@@ -66,21 +67,24 @@ class userService {
       const response = await this.repository.fetchAllUserInfo({
         email,
       });
+      if (response == constants.doesUserExist) {
+        return response;
+      }
+      let addresses = response.userAddress.map((address) => {
+        return new getUserAddress(
+          address.address,
+          address.unit,
+          address.city,
+          address.state,
+          address.zip_code
+        );
+      });
       const responseBody = new getUserResponse(
         response.user.dataValues.first_name,
         response.user.dataValues.last_name,
         response.user.dataValues.email,
-        response.user.dataValues.password,
         response.user.dataValues.date_of_birth,
-        [
-          new getUserAddress(
-            response.userAddress.dataValues.address,
-            response.userAddress.dataValues.unit,
-            response.userAddress.dataValues.city,
-            response.userAddress.dataValues.state,
-            response.userAddress.dataValues.zip_code
-          ),
-        ],
+        addresses,
         response.user.dataValues.phone
       );
 

@@ -71,7 +71,11 @@ router.get(constants.getFullUser, verifyToken, async (req, res) => {
     const response = await service.getAllUserInfo({
       email,
     });
-    res.status(200).send(response);
+    if (response == constants.doesUserExist) {
+      res.status(404).send({ message: "User doesn't exist" });
+    } else {
+      res.status(200).send(response);
+    }
   } catch (err) {
     console.log(err);
   }
@@ -80,8 +84,9 @@ router.get(constants.getFullUser, verifyToken, async (req, res) => {
 router.get(constants.getAllUsers, async (req, res) => {
   try {
     const response = await service.getAllUsers();
+
     //might cause issues on the front end with how its sent back and getting back specific data
-    res.status(200).send({ data: response });
+    res.status(200).send(response);
   } catch (err) {
     console.log(err);
   }

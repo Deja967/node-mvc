@@ -6,9 +6,6 @@ class RefreshTokenService {
   }
 
   async refreshToken({ refresh_token }) {
-    // if (!cookie?.jwt) {
-    //   return 'incorrect cookie';
-    // }
     if (refresh_token == null) {
       return 'Refresh token is required';
     }

@@ -1,5 +1,5 @@
 const constants = require('../utils/constants');
-const { verifyRefreshToken } = require('../middleware/jwt.auth');
+const { verifyRefreshToken } = require('../middleware/refresh.token.jwt.auth');
 const { setCookie } = require('../middleware/cookie.auth');
 
 const RefreshTokenService = require('../services/refresh.token.service');

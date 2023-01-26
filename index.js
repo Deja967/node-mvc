@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const usersController = require('./controller/user.controller');
+const refreshController = require('./controller/refresh.token.controller');
 
 const db = require('./schema');
 const PORT = process.env.PORT;
@@ -23,6 +24,7 @@ app.use(
 app.use(cookieParser());
 
 app.use('/', usersController);
+app.use('/', refreshController);
 
 (async () => {
   await db.sequelize.sync().then((req) => {

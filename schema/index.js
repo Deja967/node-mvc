@@ -39,7 +39,7 @@ db.address = require('./user.address.schema')(sequelize, Sequelize.DataTypes);
 db.user.hasMany(db.address);
 db.address.belongsTo(db.user);
 
-db.user.hasMany(db.refresh_token);
+db.user.hasOne(db.refresh_token);
 db.refresh_token.belongsTo(db.user);
 
 module.exports = { db, sequelize };

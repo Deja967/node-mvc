@@ -107,24 +107,3 @@ class userService {
   }
 }
 module.exports = userService;
-
-// let usersList = JSON.parse(response);
-// let newUsers = usersList.map((user) => {
-//   let addresses = user.addresses.map((address) => {
-//     return new Address(
-//       address.address,
-//       address.unit,
-//       address.city,
-//       address.state
-//     );
-//   });
-//   return new User(
-//     user.first_name,
-//     user.last_name,
-//     user.email,
-//     user.date_of_birth,
-//     user.phone,
-//     user.last_login,
-//     addresses
-//   );
-// });

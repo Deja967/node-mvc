@@ -89,6 +89,9 @@ router.get(constants.getAllUsers, async (req, res) => {
   try {
     const response = await service.getAllUsers();
     //might cause issues on the front end with how its sent back and getting back specific data
+    // console.log(
+    //   response.map((user) => console.log(user.first_name, user.last_name))
+    // );
     res.status(200).send(response);
   } catch (err) {
     console.log(err);

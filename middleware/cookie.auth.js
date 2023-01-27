@@ -3,7 +3,7 @@ const config = require('../config/auth.config');
 
 const setCookie = async (res, userId) => {
   const token = jwt.sign({ id: userId }, config.accessTokenSecret, {
-    expiresIn: '5s',
+    expiresIn: '24h',
   });
   res.cookie('jwt', token, {
     httpOnly: true,

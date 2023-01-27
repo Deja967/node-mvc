@@ -1,17 +1,19 @@
 const express = require('express');
 const { checkDuplicateEmail } = require('../middleware/verify.signup');
+const { createRefreshToken } = require('../middleware/create.refresh.token');
 const { setCookie } = require('../middleware/cookie.auth');
-const { verifyToken } = require('../middleware/jwt.auth');
+const { verifyToken } = require('../middleware/cookie.jwt.auth');
 const validation = require('../middleware/validation');
 const constants = require('../utils/constants');
 const router = express.Router();
+const userLoginResponse = require('../domain/login.user.response');
 const userService = require('../services/user.service');
 const service = new userService();
 
 router.post(
   constants.registerUser,
   validation.signUpValidator,
-  checkDuplicateEmail,
+  // checkDuplicateEmail,
   async (req, res) => {
     const {
       first_name,
@@ -55,10 +57,12 @@ router.post(
           message: 'Incorrect Email or Password',
         });
       }
-
+      const refresh = await createRefreshToken(response.dataValues.id);
       //save response var in hidden val later
-      setCookie(res, response.response.dataValues.id);
-      return res.status(200).send(response.userLoginBody);
+      const token = await setCookie(res, response.dataValues.id);
+      return res
+        .status(200)
+        .send(new userLoginResponse(response.dataValues.email, token, refresh));
     } catch (err) {
       console.log(err);
     }
@@ -84,8 +88,10 @@ router.get(constants.getFullUser, verifyToken, async (req, res) => {
 router.get(constants.getAllUsers, async (req, res) => {
   try {
     const response = await service.getAllUsers();
-
     //might cause issues on the front end with how its sent back and getting back specific data
+    // console.log(
+    //   response.map((user) => console.log(user.first_name, user.last_name))
+    // );
     res.status(200).send(response);
   } catch (err) {
     console.log(err);

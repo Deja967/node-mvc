@@ -141,10 +141,7 @@ class userRepository {
         ];
       });
       const data = JSON.parse(JSON.stringify(newData));
-
       const jsonWithoutBrackets = data.map((innerArray) => innerArray[0]);
-      console.log(jsonWithoutBrackets);
-
       return jsonWithoutBrackets;
     } catch (err) {
       console.log(err);

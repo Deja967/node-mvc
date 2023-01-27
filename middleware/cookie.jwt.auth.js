@@ -1,5 +1,14 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
+
+const catchError = (err, res) => {
+  if (err instanceof jwt.TokenExpiredError) {
+    return res
+      .status(401)
+      .send({ Error: 'Unauthorized! Access Token has expired!' });
+  }
+  return res.sendStatus(401).send({ message: 'Unauthorized!' });
+};
 const verifyToken = (req, res, next) => {
   //403 unauthorized
   const cookie = req.cookies.jwt;
@@ -11,12 +20,11 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(cookie, config.accessTokenSecret, (err, decoded) => {
     if (err) {
-      return catchError(err, res);
+      catchError(err, res);
     }
-    req.email = decoded.id;
-    next();
   });
 };
+
 module.exports = {
   verifyToken,
 };

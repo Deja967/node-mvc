@@ -51,12 +51,7 @@ class userService {
       if (response == constants.err) {
         return response;
       }
-      const userLoginBody = new userLoginResponse(email, '23123', '1231');
-      const data = {
-        userLoginBody,
-        response,
-      };
-      return data;
+      return response;
     } catch (err) {
       console.log(err);
     }

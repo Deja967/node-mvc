@@ -7,6 +7,8 @@ const getAllUsers = '/api/get-users';
 const refreshToken = '/api/refresh';
 
 const addAddress = '/api/add-address';
+const deleteAddress = '/api/delete-address';
+const updateAddress = '/api/update-address';
 //err
 const err = 'Email or Password null';
 const doesUserExist = 'No user found';
@@ -18,6 +20,8 @@ module.exports = {
   getAllUsers: getAllUsers,
   doesUserExist: doesUserExist,
   addAddress: addAddress,
+  deleteAddress: deleteAddress,
+  updateAddress: updateAddress,
   refreshToken: refreshToken,
   err: err,
 };

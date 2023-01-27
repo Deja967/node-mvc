@@ -22,6 +22,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       catchError(err, res);
     }
+    next();
   });
 };
 

@@ -47,9 +47,6 @@ module.exports = class UserAddressService {
       if (response == constants.doesAddressExist) {
         return constants.doesAddressExist;
       }
-      if (response == constants.addressDeleteSuccess) {
-        return constants.addressDeleteSuccess;
-      }
       return constants.addressDeleteSuccess;
     } catch (err) {
       console.log(err);

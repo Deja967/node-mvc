@@ -1,6 +1,5 @@
 const db = require('../schema');
-
-const User = db.user;
+const User = db.db.user;
 
 const checkDuplicateEmail = async (req, res, next) => {
   const errMsg = 'this email already exist';
@@ -12,6 +11,7 @@ const checkDuplicateEmail = async (req, res, next) => {
   if (user) {
     return res.status(409).send({ message: errMsg });
   }
+  next();
 };
 
 module.exports = { checkDuplicateEmail };

@@ -1,6 +1,7 @@
 // endpoints
 const registerUser = '/api/register';
 const loginUser = '/api/login';
+const deleteUser = '/api/delete-user';
 const updateUserInfo = '/api/update-user';
 const getFullUser = '/api/get-user';
 const getAllUsers = '/api/get-users';
@@ -12,8 +13,9 @@ const deleteAddress = '/api/delete-address';
 const updateAddress = '/api/update-address';
 //err
 const err = 'Email or Password null';
-const doesUserExist = 'user does not exist in database';
+const doesUserExist = 'User does not exist in database';
 const updateUserSuccess = 'User updated successfully';
+const deleteUserSuccess = 'User deleted successfully';
 const doesAddressExist = 'Address does not exist in database';
 const addressAddSuccess = 'Address(s) added successfully';
 const addressDeleteSuccess = 'Address(s) deleted successfully';
@@ -22,8 +24,11 @@ const addressUpdateSuccess = 'Address(s) updated successfully';
 module.exports = {
   registerUser: registerUser,
   loginUser: loginUser,
+  deleteUser: deleteUser,
+
   updateUserInfo: updateUserInfo,
   updateUserSuccess: updateUserSuccess,
+  deleteUserSuccess: deleteUserSuccess,
   getFullUser: getFullUser,
   getAllUsers: getAllUsers,
   doesUserExist: doesUserExist,

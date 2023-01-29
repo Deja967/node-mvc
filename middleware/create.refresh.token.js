@@ -1,6 +1,7 @@
 const db = require('../schema/index');
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
+const shortUUID = require('short-uuid');
 const RefreshToken = db.db.refresh_token;
 
 const createRefreshToken = async (userId) => {
@@ -13,6 +14,7 @@ const createRefreshToken = async (userId) => {
   const _token = refreshToken;
   try {
     const refreshToken = await RefreshToken.create({
+      id: shortUUID.generate(),
       refresh_token: _token,
       expiration_date: expiredAt.getTime(),
       userInformationId: userId,

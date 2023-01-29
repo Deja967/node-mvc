@@ -4,6 +4,7 @@ const saltRounds = 10;
 
 const short = require('short-uuid');
 const constants = require('../utils/constants');
+const { find } = require('lodash');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -149,28 +150,59 @@ class userRepository {
   }
 
   async updateUser(first_name, last_name, email, date_of_birth, phone) {
-    {
-      try {
-        const user = await User.update(
-          {
-            first_name: first_name,
-            last_name: last_name,
-            date_of_birth: date_of_birth,
-            phone: phone,
-          },
-          {
-            where: {
-              email: email,
-            },
-          }
-        );
-        if (!user) {
-          return constants.doesUserExist;
-        }
-        return updateUserSuccess;
-      } catch (err) {
-        console.log(err);
+    try {
+      const findUser = await User.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!findUser) {
+        return constants.doesUserExist;
       }
+      await User.update(
+        {
+          first_name: first_name,
+          last_name: last_name,
+          date_of_birth: date_of_birth,
+          phone: phone,
+        },
+        {
+          where: {
+            email: email,
+            id: findUser.id,
+          },
+        }
+      );
+      return constants.updateUserSuccess;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteUser(email) {
+    try {
+      const findUser = await User.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!findUser) {
+        return constants.doesUserExist;
+      }
+      await User.destroy({
+        where: {
+          email: email,
+          id: findUser.id,
+        },
+      });
+      await Address.destroy({
+        where: {
+          userInformationId: findUser.id,
+        },
+      });
+      return constants.deleteUserSuccess;
+    } catch (err) {
+      console.log(err);
     }
   }
 }

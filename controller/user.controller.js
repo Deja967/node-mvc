@@ -11,6 +11,7 @@ const userService = require('../services/user.service');
 const service = new userService();
 
 router.post(
+  //TODO: fix create user consecutively bug. cant create user more than once without resetting server
   constants.registerUser,
   validation.signUpValidator,
   checkDuplicateEmail,

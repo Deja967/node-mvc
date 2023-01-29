@@ -100,5 +100,35 @@ class userService {
       console.log(err);
     }
   }
+
+  async updateUser(first_name, last_name, email, date_of_birth, phone) {
+    try {
+      const response = await this.repository.updateUser(
+        first_name,
+        last_name,
+        email,
+        date_of_birth,
+        phone
+      );
+      if (response == constants.doesUserExist) {
+        return constants.doesUserExist;
+      }
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteUser(email) {
+    try {
+      const response = await this.repository.deleteUser(email);
+      if (response == constants.doesUserExist) {
+        return constants.doesUserExist;
+      }
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
 module.exports = userService;

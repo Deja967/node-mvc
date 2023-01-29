@@ -1,32 +1,90 @@
-const { add } = require('lodash');
 const db = require('../schema');
-const short = require('short-uuid');
+const constants = require('../utils/constants');
 
 const User = db.db.user;
 const Address = db.db.address;
-const sequelize = db.db.sequelize;
 
 module.exports = class UserAddressRepository {
   async addAddress(email, address) {
-    const sqlDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
     try {
-      const user = await Address.findOne({
+      const user = await User.findOne({
         where: {
           email: email,
         },
       });
       if (!user) {
-        return 'user doesnt exist in db';
+        return constants.doesUserExist;
       }
-      const response = await sequelize.query(
-        `INSERT INTO address (id, address, unit, city, state, zip_code, createdAt, updatedAt, userInformationId) VALUES ("${short.generate()}", "${
-          address[0].address
-        }", "${address[0].unit}", "${address[0].city}", "${
-          address[0].state
-        }", "${address[0].zip_code}", "${sqlDate}", "${sqlDate}"
-          )}", (SELECT id FROM userinformation WHERE email = "${email}"))`
-      );
-      console.log(response);
+
+      await address.map((address) => {
+        return Address.create({
+          address: address.address,
+          unit: address.unit,
+          city: address.city,
+          state: address.state,
+          zip_code: address.zip_code,
+          userInformationId: user.id,
+        });
+      });
+      return constants.addressAddSuccess;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateUserAddress(email, address) {
+    try {
+      const user = await User.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        return constants.doesUserExist;
+      }
+      await address.map((address) => {
+        Address.update(
+          {
+            address: address.address,
+            unit: address.unit,
+            city: address.city,
+            state: address.state,
+            zip_code: address.zip_code,
+          },
+          {
+            where: {
+              userInformationId: user.dataValues.id,
+              id: address.id,
+            },
+          }
+        );
+      });
+      return constants.addressUpdateSuccess;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async destroyUserAddress(email, addressId) {
+    try {
+      const user = await User.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        return constants.doesUserExist;
+      }
+      const address = await Address.destroy({
+        where: {
+          userInformationId: user.dataValues.id,
+          id: addressId,
+        },
+      });
+      if (!address) {
+        return constants.doesAddressExist;
+      }
+      return constants.addressDeleteSuccess;
     } catch (err) {
       console.log(err);
     }

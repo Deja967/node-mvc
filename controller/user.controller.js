@@ -13,7 +13,7 @@ const service = new userService();
 router.post(
   constants.registerUser,
   validation.signUpValidator,
-  // checkDuplicateEmail,
+  checkDuplicateEmail,
   async (req, res) => {
     const {
       first_name,
@@ -57,6 +57,7 @@ router.post(
           message: 'Incorrect Email or Password',
         });
       }
+      console.log('id :', response.dataValues.id);
       const refresh = await createRefreshToken(response.dataValues.id);
       //save response var in hidden val later
       const token = await setCookie(res, response.dataValues.id);
@@ -93,6 +94,32 @@ router.get(constants.getAllUsers, async (req, res) => {
     //   response.map((user) => console.log(user.first_name, user.last_name))
     // );
     res.status(200).send(response);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.put(constants.updateUserInfo, verifyToken, async (req, res) => {
+  const { first_name, last_name, email, date_of_birth, phone } = req.body;
+  try {
+    const response = await service.updateUser(
+      first_name,
+      last_name,
+      email,
+      date_of_birth,
+      phone
+    );
+    return res.status(200).send({ message: response });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.delete(constants.deleteUser, verifyToken, async (req, res) => {
+  const email = req.body.email;
+  try {
+    const response = await service.deleteUser(email);
+    return res.status(200).send({ message: response });
   } catch (err) {
     console.log(err);
   }

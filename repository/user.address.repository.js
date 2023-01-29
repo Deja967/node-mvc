@@ -1,12 +1,8 @@
-const { add } = require('lodash');
 const db = require('../schema');
-const { addUserAddress } = require('../config/db.layer');
-
-const short = require('short-uuid');
+const constants = require('../utils/constants');
 
 const User = db.db.user;
 const Address = db.db.address;
-const sequelize = db.db.sequelize;
 
 module.exports = class UserAddressRepository {
   async addAddress(email, address) {
@@ -17,10 +13,20 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return 'user doesnt exist in db';
+        return constants.doesUserExist;
       }
-      const response = await sequelize.query(addUserAddress(email, address));
-      return response;
+
+      await address.map((address) => {
+        return Address.create({
+          address: address.address,
+          unit: address.unit,
+          city: address.city,
+          state: address.state,
+          zip_code: address.zip_code,
+          userInformationId: user.id,
+        });
+      });
+      return constants.addressAddSuccess;
     } catch (err) {
       console.log(err);
     }
@@ -34,24 +40,26 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return "user doesn't exist in db";
+        return constants.doesUserExist;
       }
-      const address_response = await Address.update(
-        {
-          address: address[0].address,
-          unit: address[0].unit,
-          city: address[0].city,
-          state: address[0].state,
-          zip_code: address[0].zip_code,
-        },
-        {
-          where: {
-            userInformationId: user.dataValues.id,
-            id: address[0].id,
+      await address.map((address) => {
+        Address.update(
+          {
+            address: address.address,
+            unit: address.unit,
+            city: address.city,
+            state: address.state,
+            zip_code: address.zip_code,
           },
-        }
-      );
-      return 'Address(s) deleted successfully';
+          {
+            where: {
+              userInformationId: user.dataValues.id,
+              id: address.id,
+            },
+          }
+        );
+      });
+      return constants.addressUpdateSuccess;
     } catch (err) {
       console.log(err);
     }
@@ -65,7 +73,7 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return "user doesn't exist in db";
+        return constants.doesUserExist;
       }
       const address = await Address.destroy({
         where: {
@@ -73,7 +81,10 @@ module.exports = class UserAddressRepository {
           id: addressId,
         },
       });
-      return 'Address(s) deleted successfully';
+      if (!address) {
+        return constants.doesAddressExist;
+      }
+      return constants.addressDeleteSuccess;
     } catch (err) {
       console.log(err);
     }

@@ -96,6 +96,15 @@ router.get(constants.getAllUsers, async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+
+  router.put(constants.updateUserInfo, verifyToken, async (req, res) => {
+    try {
+      const response = await service.updateUser(req.body);
+      return res.status(200).send({ message: response });
+    } catch (err) {
+      console.log(err);
+    }
+  });
 });
 
 module.exports = router;

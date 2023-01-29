@@ -147,6 +147,32 @@ class userRepository {
       console.log(err);
     }
   }
+
+  async updateUser(first_name, last_name, email, date_of_birth, phone) {
+    {
+      try {
+        const user = await User.update(
+          {
+            first_name: first_name,
+            last_name: last_name,
+            date_of_birth: date_of_birth,
+            phone: phone,
+          },
+          {
+            where: {
+              email: email,
+            },
+          }
+        );
+        if (!user) {
+          return constants.doesUserExist;
+        }
+        return updateUserSuccess;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
 }
 
 module.exports = userRepository;

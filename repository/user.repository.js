@@ -49,7 +49,7 @@ class userRepository {
           email: email,
         },
       });
-      const last_login = await User.update(
+      await User.update(
         {
           last_login: new Date().toJSON().slice(0, 19).replace('T', ' '),
         },

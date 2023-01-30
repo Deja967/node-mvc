@@ -49,9 +49,6 @@ class userRepository {
           email: email,
         },
       });
-
-      console.log(user.dataValues.id);
-
       const last_login = await User.update(
         {
           last_login: new Date().toJSON().slice(0, 19).replace('T', ' '),

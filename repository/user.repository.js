@@ -50,6 +50,19 @@ class userRepository {
         },
       });
 
+      console.log(user.dataValues.id);
+
+      const last_login = await User.update(
+        {
+          last_login: new Date().toJSON().slice(0, 19).replace('T', ' '),
+        },
+        {
+          where: {
+            id: user.dataValues.id,
+          },
+        }
+      );
+
       const isPasswordValid = bcrypt.compareSync(password, user.password);
       if (!user || !isPasswordValid) {
         return constants.err;

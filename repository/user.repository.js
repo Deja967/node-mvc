@@ -1,6 +1,7 @@
 const db = require('../schema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const axios = require('axios');
 
 const short = require('short-uuid');
 const constants = require('../utils/constants');
@@ -85,9 +86,14 @@ class userRepository {
         },
         order: [['createdAt', 'DESC']],
       });
+      const userPost = await axios.get(
+        `http://localhost:8081/api/get-all-user-post?userId=${user.dataValues.id}`
+      );
+      const userPostData = userPost.data;
       const data = {
         user,
         userAddress,
+        userPostData,
       };
       return data;
     } catch (err) {

@@ -7,6 +7,7 @@ const userLoginResponse = require('../domain/login.user.response');
 
 const constants = require('../utils/constants');
 const { add } = require('lodash');
+const getUserPosts = require('../domain/get.user.post.response');
 
 class userService {
   constructor() {
@@ -74,12 +75,24 @@ class userService {
           address.zip_code
         );
       });
+      let posts = response.userPostData.data.map((post) => {
+        return new getUserPosts(
+          post.post_id,
+          post.created_at,
+          post.updated_at,
+          post.message,
+          post.user_id,
+          post.comment_id,
+          post.like_id
+        );
+      });
       const responseBody = new getUserResponse(
         response.user.dataValues.first_name,
         response.user.dataValues.last_name,
         response.user.dataValues.email,
         response.user.dataValues.date_of_birth,
         addresses,
+        posts,
         response.user.dataValues.phone
       );
 

@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const postController = require('./controller/post.controller');
+const likeController = require('./controller/like.controller');
 const config = require('./config/auth.config');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(
 app.use(cookieParser());
 
 app.use('/', postController);
+app.use('/', likeController);
 
 app.listen(config.PORT, () => {
   console.log(`Server started on port ${config.PORT}`);

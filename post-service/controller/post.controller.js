@@ -5,7 +5,7 @@ const router = require('express').Router();
 const constants = require('../utils/constants.js');
 
 router.get(constants.getSinglePost, verifyToken, async (req, res) => {
-  const post_id = req.query.Id;
+  const post_id = req.query.postId;
   const response = await service.getOnePost(post_id);
   return res.status(200).send({ data: response });
 });

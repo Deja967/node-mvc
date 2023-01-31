@@ -5,6 +5,8 @@ const getSinglePost = '/api/get-one-post';
 const addNewPost = '/api/add-post';
 const deletePost = '/api/delete-post';
 const updatePost = '/api/update-post';
+const updatePostLikes = '/api/update-post-likes';
+const removePostLikes = '/api/remove-post-likes';
 
 module.exports = {
   getAllPostsFromAllUsers: getAllPostsFromAllUsers,
@@ -13,4 +15,6 @@ module.exports = {
   addNewPost: addNewPost,
   deletePost: deletePost,
   updatePost: updatePost,
+  updatePostLikes: updatePostLikes,
+  removePostLikes: removePostLikes,
 };

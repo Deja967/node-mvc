@@ -2,25 +2,38 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const short = require('short-uuid');
 const PostResponse = require('../domain/get.post.response');
+const GetLikes = require('../domain/get.likes.response');
 
 module.exports = class PostRepository {
   async getOnePost(postId) {
     try {
-      console.log(postId);
-      const allPost = await prisma.post.findUnique({
+      const allPost = await prisma.post.findMany({
         where: {
           id: postId,
         },
+        include: {
+          likes: { include: { like: true } },
+        },
       });
-      return new PostResponse(
-        allPost.id,
-        allPost.createdAt,
-        allPost.updatedAt,
-        allPost.message,
-        allPost.userId,
-        allPost.commentId,
-        allPost.likeId
+
+      const response = JSON.parse(
+        JSON.stringify(
+          allPost.map((user) => {
+            return new PostResponse(
+              user.id,
+              user.createdAt,
+              user.updatedAt,
+              user.message,
+              user.userId,
+              user.commentId,
+              user.likes.map(
+                (like) => new GetLikes(like.like.userId, like.like.createdAt)
+              )
+            );
+          })
+        )
       );
+      return response;
     } catch (err) {
       console.log(err);
     }
@@ -47,22 +60,32 @@ module.exports = class PostRepository {
 
   async getPostsFromSingleUser(userId) {
     try {
-      const allUserPost = await prisma.post.findMany({
+      const allPost = await prisma.post.findMany({
         where: {
           userId: userId,
         },
+        include: {
+          likes: { include: { like: true } },
+        },
       });
-      return allUserPost.map((postData) => {
-        return new PostResponse(
-          postData.id,
-          postData.createdAt,
-          postData.updatedAt,
-          postData.message,
-          postData.userId,
-          postData.commentId,
-          postData.likeId
-        );
-      });
+      const response = JSON.parse(
+        JSON.stringify(
+          allPost.map((user) => {
+            return new PostResponse(
+              user.id,
+              user.createdAt,
+              user.updatedAt,
+              user.message,
+              user.userId,
+              user.commentId,
+              user.likes.map(
+                (like) => new GetLikes(like.like.userId, like.like.createdAt)
+              )
+            );
+          })
+        )
+      );
+      return response;
     } catch (err) {
       console.log(err);
     }
@@ -122,3 +145,13 @@ module.exports = class PostRepository {
     }
   }
 };
+
+// const data = JSON.stringify(allPost);
+// const result = allPost.map((user) => {
+//   return {
+//     ...user,
+//     likes: user.likes.map((like) => {
+//       return { userId: like.like.userId, createdAt: like.like.createdAt };
+//     }),
+//   };
+// });

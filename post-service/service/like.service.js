@@ -10,8 +10,8 @@ module.exports = class LikeService {
     return response;
   }
 
-  async removePostLikes(userId, likeId) {
-    const response = await repository.removePostLikes(userId, likeId);
+  async removePostLikes(userId, likeId, postId) {
+    const response = await repository.removePostLikes(userId, likeId, postId);
     if (response === 'Post does not exist') {
       return 'Post does not exist';
     }

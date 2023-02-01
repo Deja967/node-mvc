@@ -43,9 +43,9 @@ model Likes {
 }
 
 model LikesOnPosts {
-  post       Post  @relation(fields: [postId], references: [id])
+  post       Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId     String 
-  like       Likes @relation(fields: [likeId], references: [id])
+  like       Likes @relation(fields: [likeId], references: [id], onDelete: Cascade)
   likeId     String
   assignedAt DateTime @default(now())
   assignedBy String
@@ -54,9 +54,9 @@ model LikesOnPosts {
 }
 
 model LikesOnComments {
-  comment    Comment  @relation(fields: [commentId], references: [id])
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId  String 
-  like       Likes    @relation(fields: [likeId], references: [id]) 
+  like       Likes    @relation(fields: [likeId], references: [id], onDelete: Cascade) 
   likeId     String
   assignedAt DateTime @default(now())
   assignedBy String

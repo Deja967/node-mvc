@@ -83,9 +83,10 @@ class userService {
           post.message,
           post.user_id,
           post.comment_id,
-          post.like_id
+          post.likes.map((like) => like)
         );
       });
+
       const responseBody = new getUserResponse(
         response.user.dataValues.first_name,
         response.user.dataValues.last_name,

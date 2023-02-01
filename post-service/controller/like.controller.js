@@ -11,8 +11,8 @@ router.put(constants.updatePostLikes, verifyToken, async (req, res) => {
 });
 
 router.delete(constants.removePostLikes, verifyToken, async (req, res) => {
-  const { user_id, like_id } = req.body;
-  const response = await service.removePostLikes(user_id, like_id);
+  const { user_id, like_id, post_id } = req.body;
+  const response = await service.removePostLikes(user_id, like_id, post_id);
   return res.status(200).send({ message: response });
 });
 module.exports = router;

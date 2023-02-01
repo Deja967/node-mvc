@@ -15,4 +15,20 @@ router.delete(constants.removePostLikes, verifyToken, async (req, res) => {
   const response = await service.removePostLikes(user_id, like_id, post_id);
   return res.status(200).send({ message: response });
 });
+
+router.put(constants.updateCommentLikes, verifyToken, async (req, res) => {
+  const { user_id, comment_id } = req.body;
+  const response = await service.updateCommentLikes(user_id, comment_id);
+  return res.status(200).send({ message: response });
+});
+
+router.delete(constants.removeCommentLikes, verifyToken, async (req, res) => {
+  const { user_id, like_id, comment_id } = req.body;
+  const response = await service.removeCommentLikes(
+    user_id,
+    like_id,
+    comment_id
+  );
+  return res.status(200).send({ message: response });
+});
 module.exports = router;

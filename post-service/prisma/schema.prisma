@@ -28,7 +28,7 @@ model Comment {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   message    String   @db.VarChar(400)
-  userId     String? 
+  userId     String 
   postId     String
   post       Post     @relation(fields: [postId], references: [id])
   likes      LikesOnComments[]
@@ -37,15 +37,15 @@ model Likes {
   id         String   @id @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  userId     String?   
+  userId     String   
   posts      LikesOnPosts[]
   comments   LikesOnComments[]
 }
 
 model LikesOnPosts {
-  post       Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post       Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId     String 
-  like       Likes @relation(fields: [likeId], references: [id], onDelete: Cascade)
+  like       Likes? @relation(fields: [likeId], references: [id], onDelete: Cascade)
   likeId     String
   assignedAt DateTime @default(now())
   assignedBy String
@@ -56,7 +56,7 @@ model LikesOnPosts {
 model LikesOnComments {
   comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId  String 
-  like       Likes    @relation(fields: [likeId], references: [id], onDelete: Cascade) 
+  like       Likes?   @relation(fields: [likeId], references: [id], onDelete: Cascade) 
   likeId     String
   assignedAt DateTime @default(now())
   assignedBy String

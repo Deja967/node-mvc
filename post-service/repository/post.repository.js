@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const short = require('short-uuid');
 const PostResponse = require('../domain/get.post.response');
 const GetLikes = require('../domain/get.likes.response');
+const { all } = require('../controller/post.controller');
+const GetComments = require('../domain/get.comments.response');
 
 module.exports = class PostRepository {
   async getOnePost(postId) {
@@ -65,9 +67,11 @@ module.exports = class PostRepository {
           userId: userId,
         },
         include: {
+          comment: { include: { likes: true } },
           likes: { include: { like: true } },
         },
       });
+      // console.log('everything :', JSON.stringify(allPost));
       const response = JSON.parse(
         JSON.stringify(
           allPost.map((user) => {
@@ -77,7 +81,17 @@ module.exports = class PostRepository {
               user.updatedAt,
               user.message,
               user.userId,
-              user.commentId,
+              user.comment.map(
+                (getComment) =>
+                  new GetComments(
+                    getComment.userId,
+                    getComment.createdAt,
+                    getComment.message,
+                    getComment.likes.map(
+                      (like) => new GetLikes(like.userId, like.createdAt)
+                    )
+                  )
+              ),
               user.likes.map(
                 (like) => new GetLikes(like.like.userId, like.like.createdAt)
               )

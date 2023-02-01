@@ -71,7 +71,6 @@ module.exports = class PostRepository {
           likes: { include: { like: true } },
         },
       });
-      // console.log('everything :', JSON.stringify(allPost));
       const response = JSON.parse(
         JSON.stringify(
           allPost.map((user) => {
@@ -88,7 +87,7 @@ module.exports = class PostRepository {
                     getComment.createdAt,
                     getComment.message,
                     getComment.likes.map(
-                      (like) => new GetLikes(like.userId, like.createdAt)
+                      (like) => new GetLikes(like.assignedBy, like.assignedAt)
                     )
                   )
               ),

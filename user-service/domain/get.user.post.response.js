@@ -6,7 +6,7 @@ module.exports = class getUserPosts {
     message,
     user_id,
     comment_id,
-    like_id
+    likes
   ) {
     this.post_id = post_id;
     this.created_at = created_at;
@@ -14,7 +14,7 @@ module.exports = class getUserPosts {
     this.message = message;
     this.user_id = user_id;
     this.comment_id = comment_id;
-    this.like_id = like_id;
+    this.likes = likes;
   }
 
   getPostId() {

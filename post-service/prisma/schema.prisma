@@ -31,14 +31,14 @@ model Comment {
   userId     String 
   postId     String
   post       Post     @relation(fields: [postId], references: [id])
-  likes      LikesOnComments[]
+  likes      LikesOnComments[] 
 }
 model Likes {
   id         String   @id @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   userId     String   
-  posts      LikesOnPosts[]
+  posts      LikesOnPosts[] 
   comments   LikesOnComments[]
 }
 

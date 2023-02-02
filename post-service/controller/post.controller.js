@@ -34,8 +34,8 @@ router.put(constants.updatePost, verifyToken, async (req, res) => {
 });
 
 router.delete(constants.deletePost, verifyToken, async (req, res) => {
-  const { user_id, post_id, message } = req.body;
-  const response = await service.deletePost(user_id, post_id, message);
+  const { user_id, post_id } = req.body;
+  const response = await service.deletePost(user_id, post_id);
   return res.status(200).send({ response });
 });
 

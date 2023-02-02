@@ -30,7 +30,7 @@ model Comment {
   message    String   @db.VarChar(400)
   userId     String 
   postId     String
-  post       Post     @relation(fields: [postId], references: [id])
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   likes      LikesOnComments[] 
 }
 model Likes {

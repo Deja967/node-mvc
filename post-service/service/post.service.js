@@ -40,11 +40,8 @@ module.exports = class PostService {
     return new UpdatePost(response, postId, userId, new_message);
   }
 
-  async deletePost(userId, postId, message) {
+  async deletePost(userId, postId) {
     const response = await repository.destroyPost(userId, postId);
-    if (response === 'Post does not exist') {
-      return 'Post does not exist';
-    }
-    return new DeletePost('Post successfully deleted', userId, message);
+    return response;
   }
 };

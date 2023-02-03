@@ -6,6 +6,7 @@ const axios = require('axios');
 const short = require('short-uuid');
 const constants = require('../utils/constants');
 const { find } = require('lodash');
+const e = require('express');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -86,16 +87,18 @@ class userRepository {
         },
         order: [['createdAt', 'DESC']],
       });
-      const userPost = await axios.get(
-        `http://localhost:8081/api/get-all-user-post?userId=${user.dataValues.id}`
-      );
-      const userPostData = userPost.data;
-      const data = {
-        user,
-        userAddress,
-        userPostData,
-      };
-      return data;
+      if (!userAddress) {
+        const data = {
+          user,
+        };
+        return data;
+      } else {
+        const data = {
+          user,
+          userAddress,
+        };
+        return data;
+      }
     } catch (err) {
       console.log(err);
     }

@@ -75,17 +75,6 @@ class userService {
           address.zip_code
         );
       });
-      let posts = response.userPostData.data.map((post) => {
-        return new getUserPosts(
-          post.post_id,
-          post.created_at,
-          post.updated_at,
-          post.message,
-          post.user_id,
-          post.comment_id,
-          post.likes.map((like) => like)
-        );
-      });
 
       const responseBody = new getUserResponse(
         response.user.dataValues.first_name,
@@ -93,7 +82,6 @@ class userService {
         response.user.dataValues.email,
         response.user.dataValues.date_of_birth,
         addresses,
-        posts,
         response.user.dataValues.phone
       );
 

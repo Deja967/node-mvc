@@ -21,6 +21,7 @@ const addressAddSuccess = 'Address(s) added successfully';
 const addressDeleteSuccess = 'Address(s) deleted successfully';
 const addressUpdateSuccess = 'Address(s) updated successfully';
 
+const nodeDate = new Date().toJSON().slice(0, 19).replace('T', ' ');
 module.exports = {
   registerUser: registerUser,
   loginUser: loginUser,
@@ -41,4 +42,5 @@ module.exports = {
   updateAddress: updateAddress,
   refreshToken: refreshToken,
   err: err,
+  nodeDate: nodeDate,
 };

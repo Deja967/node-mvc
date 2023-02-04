@@ -52,7 +52,7 @@ class userRepository {
       });
       await User.update(
         {
-          last_login: new Date().toJSON().slice(0, 19).replace('T', ' '),
+          last_login: constants.nodeDate,
         },
         {
           where: {

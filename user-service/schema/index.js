@@ -28,9 +28,14 @@ const db = {};
 db.sequelize = sequelize;
 db.sequelize = sequelize;
 db.sequelize = sequelize;
+db.sequelize = sequelize;
 
 db.user = require('./user.schema')(sequelize, Sequelize.DataTypes);
 db.refresh_token = require('./user.refresh.token.schema')(
+  sequelize,
+  Sequelize.DataTypes
+);
+db.forgot_password = require('./user.forgot.password.schema')(
   sequelize,
   Sequelize.DataTypes
 );
@@ -41,5 +46,8 @@ db.address.belongsTo(db.user);
 
 db.user.hasOne(db.refresh_token);
 db.refresh_token.belongsTo(db.user);
+
+db.user.hasOne(db.forgot_password);
+db.forgot_password.belongsTo(db.user);
 
 module.exports = { db, sequelize };

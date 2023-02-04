@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const forgotPasswordController = require('./controller/forgot.password.controller');
 const usersController = require('./controller/user.controller');
 const userAddressController = require('./controller/user.address.controller');
 const refreshController = require('./controller/refresh.token.controller');
@@ -24,6 +25,7 @@ app.use(
 
 app.use(cookieParser());
 
+app.use('/', forgotPasswordController);
 app.use('/', usersController);
 app.use('/', userAddressController);
 app.use('/', refreshController);

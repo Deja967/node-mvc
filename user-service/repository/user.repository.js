@@ -2,10 +2,8 @@ const db = require('../schema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const axios = require('axios');
-
-const short = require('short-uuid');
 const constants = require('../utils/constants');
-const { find } = require('lodash');
+const Api401Error = require('../utils/error');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -42,14 +40,20 @@ class userRepository {
     console.log(err);
   }
 
-  async getUserInfo({ email, password, res }) {
-    console.log(email, password);
+  async getUserInfo({ email, password }) {
     try {
       const user = await User.findOne({
         where: {
           email: email,
         },
       });
+      const isPasswordValid = bcrypt.compareSync(
+        password,
+        user.dataValues.password
+      );
+      if (!user || !isPasswordValid) {
+        throw new Api401Error();
+      }
       await User.update(
         {
           last_login: constants.nodeDate,
@@ -60,14 +64,13 @@ class userRepository {
           },
         }
       );
-
-      const isPasswordValid = bcrypt.compareSync(password, user.password);
-      if (!user || !isPasswordValid) {
-        return constants.err;
-      }
-      return user;
+      const data = {
+        email: user.dataValues.email,
+        id: user.dataValues.id,
+      };
+      return data;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
   async fetchAllUserInfo({ email }) {

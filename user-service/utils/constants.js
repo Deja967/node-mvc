@@ -1,3 +1,30 @@
+const RouteEndPoints = {
+  REGISTER_USER: '/api/register',
+  LOGIN_USER: '/api/login',
+  DELETE_USER: '/api/delete-user',
+  UPDATE_USER: '/api/update-user',
+  GET_USER: '/api/get-user',
+  GET_USERS: '/api/get-users',
+
+  ADD_ADDRESS: '/api/add-address',
+  UPDATE_USER_ADDRESS: '/api/delete-address',
+  DELETE_USER_ADDRESS: '/api/update-address',
+
+  REFRESH_TOKEN: '/api/refresh',
+};
+
+const ResponseMessages = {
+  REGISTER_USER_SUCCESS: 'User registered successfully',
+  LOGIN_USER_SUCCESS: 'User logged in successfully',
+  DELETE_USER_SUCCESS: 'User deleted successfully',
+  UPDATE_USER_SUCCESS: 'User updated successfully',
+  GET_USER_SUCCESS: 'User retrieved successfully',
+  ADDRESS_ADDED_SUCCESS: 'Address added successfully',
+  ADDRESS_UPDATED_SUCCESS: 'Address(s) updated successfully',
+  ADDRESS_DELETED_SUCCESS: 'Address(s) deleted successfully',
+  LOGIN_USER_FAILED: 'Email or password is incorrect',
+};
+
 // endpoints
 const registerUser = '/api/register';
 const loginUser = '/api/login';
@@ -12,7 +39,7 @@ const addAddress = '/api/add-address';
 const deleteAddress = '/api/delete-address';
 const updateAddress = '/api/update-address';
 //err
-const err = 'Email or Password null';
+const err = 'Email or Password incorrect';
 const doesUserExist = 'User does not exist in database';
 const updateUserSuccess = 'User updated successfully';
 const deleteUserSuccess = 'User deleted successfully';
@@ -43,4 +70,6 @@ module.exports = {
   refreshToken: refreshToken,
   err: err,
   nodeDate: nodeDate,
+  RouteEndPoints,
+  ResponseMessages,
 };

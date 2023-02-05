@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//post can have many comments but each comment only belongs to one post.
+//post can have many likes and likes can belong to post.
+model Post {
+  id         String   @id @unique 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  message    String   @db.VarChar(400)
+  userId     String?
+  comment    Comment[]
+  likes      LikesOnPosts[]
+}
+
+//Comments can have many likes and likes can belong to many comments
+model Comment {
+  id         String   @id @unique 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  message    String   @db.VarChar(400)
+  userId     String? 
+  postId     String
+  post       Post     @relation(fields: [postId], references: [id])
+  likes      LikesOnComments[]
+}
+model Likes {
+  id         String   @id @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String?   
+  posts      LikesOnPosts[]
+  comments   LikesOnComments[]
+}
+
+model LikesOnPosts {
+  post       Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String 
+  like       Likes @relation(fields: [likeId], references: [id], onDelete: Cascade)
+  likeId     String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([postId,  likeId])
+}
+
+model LikesOnComments {
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId  String 
+  like       Likes    @relation(fields: [likeId], references: [id], onDelete: Cascade) 
+  likeId     String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([commentId, likeId])
+}
+

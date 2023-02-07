@@ -1,37 +1,29 @@
 const router = require('express').Router();
-const { createRefreshToken } = require('../middleware/create.refresh.token');
-
-const { RouteEndPoints, ErrorMessages } = require('../utils/errorMessages');
+const AuthService = require('../service/auth.service');
+const service = new AuthService();
+// const { createRefreshToken } = require('../middleware/create.refresh.token');
+const { checkDuplicateEmail } = require('../middleware/verify.signup');
+const { RouteEndPoints, ErrorMessages } = require('../utils/constants');
+const httpStatusCodes = require('../utils/httpStatusCodes');
+const BaseError = require('../utils/baseError');
+const { setCookie } = require('../middleware/cookie.auth');
 
 router.post(
-  //TODO: fix create user consecutively bug. cant create user more than once without resetting server
   RouteEndPoints.REGISTER_USER,
-  validation.signUpValidator,
+  // validation.signUpValidator,
   checkDuplicateEmail,
   async (req, res) => {
-    const {
-      first_name,
-      last_name,
-      email,
-      password,
-      date_of_birth,
-      address,
-      phone,
-    } = req.body;
+    console.log('body :', req);
+    const { email, password } = req.body;
+    console.log('email :', email);
+
     try {
       const response = await service.signUp({
-        first_name,
-        last_name,
         email,
         password,
-        date_of_birth,
-        address,
-        phone,
       });
-      res.status(200).send(response);
+      res.status(httpStatusCodes.OK).send(response);
     } catch (err) {
-      console.log('controller error: ', err);
-
       if (err instanceof BaseError) {
         res.status(err.statusCode).send({
           title: 'Authorization Error',
@@ -45,20 +37,19 @@ router.post(
 
 router.post(
   RouteEndPoints.LOGIN_USER,
-  validation.signInValidator,
+  setCookie,
+  // validation.signInValidator,
   async (req, res) => {
     const { email, password } = req.body;
+    console.log('cookies :', cookies.jwt);
     try {
-      const response = await service.signIn({
+      const response = await service.loginUser({
         email,
         password,
-        res,
       });
-      const refresh = await createRefreshToken(response.id);
-      const token = await setCookie(res, response.id);
-      return res
-        .status(httpStatusCodes.OK)
-        .send(new userLoginResponse(response.email, token, refresh));
+      // const refresh = await createRefreshToken(response.id);
+      // const token = await setCookie(res, response.id);
+      return res.status(httpStatusCodes.OK).send(response);
     } catch (err) {
       if (err instanceof BaseError) {
         res.status(err.statusCode).send({

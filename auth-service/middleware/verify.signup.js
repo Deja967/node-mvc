@@ -1,11 +1,11 @@
-const db = require('../schema');
-const User = db.db.user;
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 const { ErrorMessages } = require('../utils/constants');
 const Api409Error = require('../utils/errors/409');
 
 const checkDuplicateEmail = async (req, res, next) => {
   try {
-    const user = await User.findOne({
+    const user = await prisma.user.findFirst({
       where: {
         email: req.body.email,
       },
@@ -14,6 +14,8 @@ const checkDuplicateEmail = async (req, res, next) => {
       throw new Api409Error();
     }
   } catch (err) {
+    console.log(err);
+
     next(
       res.status(err.statusCode).send({
         title: ErrorMessages.USER_EXISTS,

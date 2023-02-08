@@ -1,13 +1,14 @@
 const httpStatusCodes = require('../httpStatusCodes');
-const { ResponseMessages } = require('../constants');
+const { ErrorMessages } = require('../constants');
 const BaseError = require('../baseError');
 
 class Api409Error extends BaseError {
   constructor(
+    title = ErrorMessages.EXIST_ERROR,
     statusCode = httpStatusCodes.CONFLICT,
-    description = ResponseMessages.REGISTER_USER_FAILURE_EMAIL
+    description = ErrorMessages.USER_EXISTS
   ) {
-    super(description, statusCode);
+    super(title, statusCode, description);
   }
 }
 

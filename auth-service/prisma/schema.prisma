@@ -11,9 +11,30 @@ datasource db {
 }
 
 model User {
-  id         String   @id @unique 
-  email      String 
-  password   String   
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id @unique
+  email           String 
+  password        String   
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  refresh_token   RefreshToken[]
+  forgot_token    ForgotToken[]
+}
+
+model RefreshToken {
+  id              String   @id  @unique
+  refresh_token   String
+  expiration_date DateTime 
+  user            User @relation(fields:[userId], references: [id])    
+  userId          String 
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+model ForgotToken {
+  id              String   @id  @unique
+  forgot_token    String
+  expiration_date DateTime 
+  user            User @relation(fields:[userId], references: [id])    
+  userId          String 
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

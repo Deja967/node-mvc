@@ -3,12 +3,7 @@ const config = require('../config/auth.config');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const setCookie = async (req, res, next) => {
-  const email = req.body.email;
-
-  const userId = await prisma.user.findFirst({
-    where: { email },
-  });
+const setCookie = async (res, userId) => {
   const token = jwt.sign({ id: userId }, config.accessTokenSecret, {
     expiresIn: '24h',
   });
@@ -19,7 +14,7 @@ const setCookie = async (req, res, next) => {
     maxAge: 24 * 60 * 60 * 1000,
     withCredentials: true,
   });
-  next();
+  return token;
 };
 
 module.exports = { setCookie };

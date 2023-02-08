@@ -3,6 +3,8 @@ const RouteEndPoints = {
   LOGIN_USER: '/api/login',
 
   REFRESH_TOKEN: '/api/refresh',
+  FORGOT_PASSWORD: '/api/forgot-password',
+  RESET_PASSWORD: '/api/reset-password',
 };
 
 const ResponseMessages = {
@@ -13,7 +15,9 @@ const ResponseMessages = {
 
 const ErrorMessages = {
   AUTH_ERROR: 'Authorization Error',
-  USER_EXISTS: 'User already exists',
+  EXIST_ERROR: 'Already Exist',
+  NOT_FOUND_ERROR: 'Not Found',
+  USER_EXISTS: 'User with this email already exists',
   USER_NOT_FOUND: 'No user found with this email',
 };
 

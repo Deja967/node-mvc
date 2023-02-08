@@ -25,4 +25,15 @@ module.exports = class AuthService {
       throw err;
     }
   }
+
+  async forgotPassword({ email }) {
+    try {
+      const response = await repository.forgotPassword({
+        email,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 };

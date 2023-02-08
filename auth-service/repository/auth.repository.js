@@ -1,13 +1,18 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const config = require('../config/auth.config');
+const jwt = require('jsonwebtoken');
 
 const short = require('short-uuid');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const CreateNewUser = require('../domain/create.user.response');
+const NewAccessToken = require('../domain/new.access.token');
 const { ResponseMessages } = require('../utils/constants');
-const { createRefreshToken } = require('../utils/create.refresh.token');
+const {
+  createRefreshToken,
+  deleteIfExpired,
+} = require('../utils/create.refresh.token');
 const {
   createForgotPasswordToken,
 } = require('../utils/create.forgot.password.token');
@@ -56,6 +61,22 @@ module.exports = class AuthRepository {
       };
       return data;
     } catch (err) {
+      throw err;
+    }
+  }
+
+  async newRefreshToken(token) {
+    try {
+      const user = await deleteIfExpired(token);
+      console.log('user :', user);
+
+      let newAccessToken = jwt.sign({ id: user }, config.accessTokenSecret, {
+        expiresIn: '24h',
+      });
+      return new NewAccessToken(newAccessToken);
+    } catch (err) {
+      console.log('err 2: ', err);
+
       throw err;
     }
   }

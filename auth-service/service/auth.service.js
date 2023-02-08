@@ -26,6 +26,15 @@ module.exports = class AuthService {
     }
   }
 
+  async refreshToken(token) {
+    try {
+      const response = await repository.newRefreshToken(token);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async forgotPassword({ email }) {
     try {
       const response = await repository.forgotPassword({

@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 const short = require('short-uuid');
+const Api404Error = require('../utils/errors/404');
+const Api401Error = require('../utils/errors/401');
 
 const createRefreshToken = async (userId) => {
   const expiredAt = new Date();
@@ -27,22 +29,29 @@ const createRefreshToken = async (userId) => {
   }
 };
 
-// const deleteIfExpired = async (token) => {
-//   const getTokenTime = await prisma.refreshToken.findFirst({
-//     where: {
-//       refresh_token: token,
-//     },
-//   });
-//   const isExpired = getTokenTime.expiration_date;
-//   if (isExpired < new Date().getTime()) {
-//     prisma.refreshToken.delete({
-//       where: {
-//         refresh_token: token,
-//       },
-//     });
-//     return true;
-//   }
-//   return false;
-// };
-// module.exports = { createRefreshToken, deleteIfExpired };
-module.exports = { createRefreshToken };
+const deleteIfExpired = async (token) => {
+  try {
+    const refreshToken = await prisma.refreshToken.findFirst({
+      where: {
+        refresh_token: token,
+      },
+    });
+    if (!refreshToken) {
+      throw new Api404Error();
+    }
+    const isExpired = refreshToken.expiration_date;
+    if (isExpired < new Date().getTime()) {
+      prisma.refreshToken.delete({
+        where: {
+          refresh_token: token,
+        },
+      });
+      throw new Api401Error();
+    }
+    return refreshToken.userId;
+  } catch (err) {
+    console.log('err :', err);
+    throw err;
+  }
+};
+module.exports = { createRefreshToken, deleteIfExpired };

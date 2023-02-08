@@ -1,4 +1,5 @@
 const GetLikes = require('../domain/get.likes.response');
+const GetComments = require('../domain/get.comments.response');
 module.exports = class AllPostResponse {
   constructor(
     post_id,
@@ -6,7 +7,7 @@ module.exports = class AllPostResponse {
     updated_at,
     message,
     user_id,
-    comment_id,
+    comments = new GetComments(),
     likes = new GetLikes()
   ) {
     //TODO: comment_id,  should be list
@@ -15,7 +16,7 @@ module.exports = class AllPostResponse {
     this.updated_at = updated_at;
     this.message = message;
     this.user_id = user_id;
-    this.comment_id = comment_id;
+    this.comments = comments;
     this.likes = likes;
   }
 
@@ -37,10 +38,10 @@ module.exports = class AllPostResponse {
   }
 
   getCommentId() {
-    return this.comment_id;
+    return this.comments;
   }
 
-  getLikeId() {
-    return this.like;
+  getLikes() {
+    return this.likes;
   }
 };

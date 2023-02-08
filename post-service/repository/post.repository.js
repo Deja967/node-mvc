@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const short = require('short-uuid');
 const PostResponse = require('../domain/get.post.response');
 const GetLikes = require('../domain/get.likes.response');
+const { all } = require('../controller/post.controller');
+const GetComments = require('../domain/get.comments.response');
 
 module.exports = class PostRepository {
   async getOnePost(postId) {
@@ -65,6 +67,7 @@ module.exports = class PostRepository {
           userId: userId,
         },
         include: {
+          comment: { include: { likes: true } },
           likes: { include: { like: true } },
         },
       });
@@ -77,7 +80,17 @@ module.exports = class PostRepository {
               user.updatedAt,
               user.message,
               user.userId,
-              user.commentId,
+              user.comment.map(
+                (getComment) =>
+                  new GetComments(
+                    getComment.userId,
+                    getComment.createdAt,
+                    getComment.message,
+                    getComment.likes.map(
+                      (like) => new GetLikes(like.assignedBy, like.assignedAt)
+                    )
+                  )
+              ),
               user.likes.map(
                 (like) => new GetLikes(like.like.userId, like.like.createdAt)
               )
@@ -128,30 +141,48 @@ module.exports = class PostRepository {
   }
 
   async destroyPost(userId, postId) {
-    try {
-      //Multiple clause in .delete not supported, so have to use deleteMany
-      const response = await prisma.post.deleteMany({
-        where: {
-          id: postId,
-          userId: userId,
-        },
-      });
-      if (response.count === 0) {
-        return 'Post does not exist';
-      }
-      return response;
-    } catch (err) {
-      console.log(err);
+    const comment = await prisma.comment.findMany({
+      where: {
+        postId: postId,
+      },
+      select: { id: true },
+    });
+
+    const commentLikes = await prisma.likesOnComments.findMany({
+      where: {
+        commentId: { in: comment.map((like) => like.id) },
+      },
+      select: {
+        likeId: true,
+      },
+    });
+    const likeSetOne = commentLikes.map((like) => like.likeId);
+    const postLikes = await prisma.likesOnPosts.findMany({
+      where: {
+        postId: postId,
+      },
+      select: {
+        likeId: true,
+      },
+    });
+    const likeSetTwo = postLikes.map((like) => like.likeId);
+    const deleteLikes = likeSetOne.concat(likeSetTwo);
+
+    const deleteAssociatedLikes = await prisma.likes.deleteMany({
+      where: {
+        id: { in: deleteLikes.map((like) => like) },
+      },
+    });
+    const response = await prisma.post.deleteMany({
+      where: {
+        id: postId,
+        userId: userId,
+      },
+    });
+    console.log('response', response);
+    if (response.count === 1) {
+      return 'post deleted successfully';
     }
+    return 'post does not exist / post not deleted';
   }
 };
-
-// const data = JSON.stringify(allPost);
-// const result = allPost.map((user) => {
-//   return {
-//     ...user,
-//     likes: user.likes.map((like) => {
-//       return { userId: like.like.userId, createdAt: like.like.createdAt };
-//     }),
-//   };
-// });

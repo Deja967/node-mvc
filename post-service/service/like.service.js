@@ -17,4 +17,24 @@ module.exports = class LikeService {
     }
     return response;
   }
+
+  async updateCommentLikes(userId, commentId) {
+    const response = await repository.updateCommentLikes(userId, commentId);
+    if (response === 'Comment does not exist') {
+      return 'Comment does not exist';
+    }
+    return response;
+  }
+
+  async removeCommentLikes(userId, likeId, commentId) {
+    const response = await repository.removeCommentLikes(
+      userId,
+      likeId,
+      commentId
+    );
+    if (response === 'Comment does not exist') {
+      return 'Comment does not exist';
+    }
+    return response;
+  }
 };

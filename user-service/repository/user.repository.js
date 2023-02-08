@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const axios = require('axios');
 const constants = require('../utils/constants');
+const { find } = require('lodash');
+const e = require('express');
 const getUserResponse = require('../domain/get.user.response');
 const getUserAddress = require('../domain/get.user.address');
 const Api401Error = require('../utils/errors/401');
@@ -92,26 +94,18 @@ class userRepository {
         },
         order: [['createdAt', 'DESC']],
       });
-
-      let addresses = userAddress.map((address) => {
-        return new getUserAddress(
-          address.address,
-          address.unit,
-          address.city,
-          address.state,
-          address.zip_code
-        );
-      });
-
-      const responseBody = new getUserResponse(
-        user.dataValues.first_name,
-        user.dataValues.last_name,
-        user.dataValues.email,
-        user.dataValues.date_of_birth,
-        addresses,
-        user.dataValues.phone
-      );
-      return responseBody;
+      if (!userAddress) {
+        const data = {
+          user,
+        };
+        return data;
+      } else {
+        const data = {
+          user,
+          userAddress,
+        };
+        return data;
+      }
     } catch (err) {
       throw err;
     }

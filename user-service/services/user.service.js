@@ -61,6 +61,29 @@ class userService {
         email,
       });
       return response;
+      if (response == constants.doesUserExist) {
+        return response;
+      }
+      let addresses = response.userAddress.map((address) => {
+        return new getUserAddress(
+          address.address,
+          address.unit,
+          address.city,
+          address.state,
+          address.zip_code
+        );
+      });
+
+      const responseBody = new getUserResponse(
+        response.user.dataValues.first_name,
+        response.user.dataValues.last_name,
+        response.user.dataValues.email,
+        response.user.dataValues.date_of_birth,
+        addresses,
+        response.user.dataValues.phone
+      );
+
+      return responseBody;
     } catch (err) {
       throw err;
     }

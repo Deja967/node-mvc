@@ -1,10 +1,11 @@
 require('dotenv').config();
 
-module.exports = {
+const config = {
+  PORT: process.env.PORT,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-  FORGOT_PASSWORD_SECRET: process.env.FORGOT_PASSWORD_SECRET,
-  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
-  EMAIL_FROM: process.env.EMAIL_FROM,
+  forgotPasswordSecret: process.env.FORGOT_PASSWORD_SECRET,
   BASE_URL: process.env.BASE_URL,
 };
+
+module.exports = config;

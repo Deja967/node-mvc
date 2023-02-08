@@ -2,11 +2,13 @@ const db = require('../schema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const axios = require('axios');
-
-const short = require('short-uuid');
 const constants = require('../utils/constants');
 const { find } = require('lodash');
 const e = require('express');
+const getUserResponse = require('../domain/get.user.response');
+const getUserAddress = require('../domain/get.user.address');
+const Api401Error = require('../utils/errors/401');
+const Api404Error = require('../utils/errors/404');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -43,17 +45,23 @@ class userRepository {
     console.log(err);
   }
 
-  async getUserInfo({ email, password, res }) {
-    console.log(email, password);
+  async getUserInfo({ email, password }) {
     try {
       const user = await User.findOne({
         where: {
           email: email,
         },
       });
+      const isPasswordValid = bcrypt.compareSync(
+        password,
+        user.dataValues.password
+      );
+      if (!user || !isPasswordValid) {
+        throw new Api401Error();
+      }
       await User.update(
         {
-          last_login: new Date().toJSON().slice(0, 19).replace('T', ' '),
+          last_login: constants.nodeDate,
         },
         {
           where: {
@@ -61,14 +69,13 @@ class userRepository {
           },
         }
       );
-
-      const isPasswordValid = bcrypt.compareSync(password, user.password);
-      if (!user || !isPasswordValid) {
-        return constants.err;
-      }
-      return user;
+      const data = {
+        email: user.dataValues.email,
+        id: user.dataValues.id,
+      };
+      return data;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
   async fetchAllUserInfo({ email }) {
@@ -79,7 +86,7 @@ class userRepository {
         },
       });
       if (!user) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       const userAddress = await Address.findAll({
         where: {
@@ -100,7 +107,7 @@ class userRepository {
         return data;
       }
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -176,7 +183,7 @@ class userRepository {
         },
       });
       if (!findUser) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       await User.update(
         {
@@ -194,7 +201,7 @@ class userRepository {
       );
       return constants.updateUserSuccess;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -206,7 +213,7 @@ class userRepository {
         },
       });
       if (!findUser) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       await User.destroy({
         where: {
@@ -221,7 +228,7 @@ class userRepository {
       });
       return constants.deleteUserSuccess;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 }

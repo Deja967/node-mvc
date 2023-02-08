@@ -43,18 +43,15 @@ class userService {
     }
   }
 
-  async signIn({ email, password, res }) {
+  async signIn({ email, password }) {
     try {
       const response = await this.repository.getUserInfo({
         email,
         password,
       });
-      if (response == constants.err) {
-        return response;
-      }
       return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -63,6 +60,7 @@ class userService {
       const response = await this.repository.fetchAllUserInfo({
         email,
       });
+      return response;
       if (response == constants.doesUserExist) {
         return response;
       }
@@ -87,7 +85,7 @@ class userService {
 
       return responseBody;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -99,7 +97,7 @@ class userService {
       // console.log(names);
       return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -117,7 +115,7 @@ class userService {
       }
       return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -129,7 +127,7 @@ class userService {
       }
       return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 }

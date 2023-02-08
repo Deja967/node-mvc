@@ -3,8 +3,8 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 const sendEmail = (link) => {
   const msg = {
-    to: 'dejaallison@gmail.com', // Change to your recipient
-    from: 'dejaallison@gmail.com', // Change to your verified sender
+    to: config.EMAIL_FROM, // Change to your recipient
+    from: config.EMAIL_FROM, // Change to your verified sender
     subject: 'Reset Password',
     html:
       '<p>You requested for reset password, kindly use this <a href=" ' +

@@ -8,7 +8,6 @@ const usersController = require('./controller/user.controller');
 const userAddressController = require('./controller/user.address.controller');
 const refreshController = require('./controller/refresh.token.controller');
 
-const db = require('./schema');
 const PORT = process.env.PORT;
 
 const app = express();

@@ -3,7 +3,10 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const axios = require('axios');
 const constants = require('../utils/constants');
-const Api401Error = require('../utils/error');
+const getUserResponse = require('../domain/get.user.response');
+const getUserAddress = require('../domain/get.user.address');
+const Api401Error = require('../utils/errors/401');
+const Api404Error = require('../utils/errors/404');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -81,7 +84,7 @@ class userRepository {
         },
       });
       if (!user) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       const userAddress = await Address.findAll({
         where: {
@@ -89,18 +92,28 @@ class userRepository {
         },
         order: [['createdAt', 'DESC']],
       });
-      const userPost = await axios.get(
-        `http://localhost:8081/api/get-all-user-post?userId=${user.dataValues.id}`
+
+      let addresses = userAddress.map((address) => {
+        return new getUserAddress(
+          address.address,
+          address.unit,
+          address.city,
+          address.state,
+          address.zip_code
+        );
+      });
+
+      const responseBody = new getUserResponse(
+        user.dataValues.first_name,
+        user.dataValues.last_name,
+        user.dataValues.email,
+        user.dataValues.date_of_birth,
+        addresses,
+        user.dataValues.phone
       );
-      const userPostData = userPost.data;
-      const data = {
-        user,
-        userAddress,
-        userPostData,
-      };
-      return data;
+      return responseBody;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -176,7 +189,7 @@ class userRepository {
         },
       });
       if (!findUser) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       await User.update(
         {
@@ -194,7 +207,7 @@ class userRepository {
       );
       return constants.updateUserSuccess;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -206,7 +219,7 @@ class userRepository {
         },
       });
       if (!findUser) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       await User.destroy({
         where: {
@@ -221,7 +234,7 @@ class userRepository {
       });
       return constants.deleteUserSuccess;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 }

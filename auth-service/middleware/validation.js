@@ -76,4 +76,41 @@ const validateLogin = (req, res, next) => {
   }
 };
 
-module.exports = { validateSignUp, validateLogin };
+const validateUpdatePassword = (req, res, next) => {
+  try {
+    const schema = Joi.object({
+      token: Joi.string().required(),
+      password: Joi.string()
+        .min(10)
+        .max(15)
+        //needs at least 1 special character
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          'password'
+        )
+        //underscore not valid in password
+        .invalid('_')
+        .required(),
+    });
+    const { error, value } = schema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const message = error.details.map((x) => ({ message: x.message }));
+      next(
+        res
+          .status(httpStatusCodes.BAD_REQUEST)
+          .send(
+            new Api400Error(
+              ErrorMessages.BAD_REQUEST,
+              httpStatusCodes.BAD_REQUEST,
+              message
+            )
+          )
+      );
+    }
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = { validateSignUp, validateLogin, validateUpdatePassword };

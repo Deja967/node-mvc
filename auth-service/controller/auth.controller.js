@@ -8,7 +8,11 @@ const BaseError = require('../utils/baseError');
 const { setCookie } = require('../middleware/cookie.auth');
 const userLoginResponse = require('../domain/login.user.response');
 const { verifyRefreshToken } = require('../middleware/verify.refresh.token');
-const { validateSignUp, validateLogin } = require('../middleware/validation');
+const {
+  validateSignUp,
+  validateLogin,
+  validateUpdatePassword,
+} = require('../middleware/validation');
 
 router.post(
   RouteEndPoints.REGISTER_USER,
@@ -90,4 +94,25 @@ router.post(RouteEndPoints.FORGOT_PASSWORD, async (req, res) => {
     return res.status(httpStatusCodes.OK).send(response);
   } catch (err) {}
 });
+
+router.post(
+  RouteEndPoints.RESET_PASSWORD,
+  validateUpdatePassword,
+  async (req, res) => {
+    const { token, password } = req.body;
+    try {
+      const response = await service.resetPassword(token, password);
+      console.log(response);
+      return res.status(httpStatusCodes.OK).send({ response });
+    } catch (err) {
+      if (err instanceof BaseError) {
+        res.status(err.code).send({
+          title: err.title,
+          status: err.code,
+          error: err.description,
+        });
+      }
+    }
+  }
+);
 module.exports = router;

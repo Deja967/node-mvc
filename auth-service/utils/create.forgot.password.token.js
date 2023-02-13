@@ -23,7 +23,6 @@ const createForgotPasswordToken = async (userId) => {
       userId: userId,
     },
   });
-
   const oldToken = await prisma.forgotToken.findMany({
     where: {
       userId: userId,

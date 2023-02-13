@@ -8,17 +8,17 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const CreateNewUser = require('../domain/create.user.response');
 const NewAccessToken = require('../domain/new.access.token');
-const { ResponseMessages } = require('../utils/constants');
-const {
-  createRefreshToken,
-  deleteIfExpired,
-} = require('../utils/create.refresh.token');
+const { ResponseMessages, ErrorMessages } = require('../utils/constants');
+const { createRefreshToken } = require('../utils/create.refresh.token');
 const {
   createForgotPasswordToken,
 } = require('../utils/create.forgot.password.token');
 
+const { sendEmail } = require('../utils/send.email');
+const Api400Error = require('../utils/errors/400');
 const Api401Error = require('../utils/errors/401');
 const Api404Error = require('../utils/errors/404');
+const httpStatusCodes = require('../utils/httpStatusCodes');
 
 module.exports = class AuthRepository {
   async createNewUser({ email, password }) {
@@ -91,7 +91,7 @@ module.exports = class AuthRepository {
       const userId = user.id;
       const token = await createForgotPasswordToken(userId);
       const link = `${config.BASE_URL}/reset-password?token=${token.forgot_token}&id=${userId}`;
-      // sendEmail(link);
+      sendEmail(link);
       const data = {
         message:
           'We have received a request to reset your password. please click on this link to reset your password.',
@@ -100,6 +100,38 @@ module.exports = class AuthRepository {
       return data;
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async resetPassword(token, password) {
+    try {
+      const userToken = await prisma.user.findFirst({
+        where: {
+          forgot_token: {
+            some: {
+              forgot_token: token,
+            },
+          },
+        },
+      });
+      const isValid = bcrypt.compareSync(password, userToken.password);
+      if (isValid) {
+        throw new Api400Error(
+          ErrorMessages.BAD_REQUEST,
+          httpStatusCodes.BAD_REQUEST,
+          ErrorMessages.PASSWORD_SAME
+        );
+      }
+      const newPassword = bcrypt.hashSync(password, saltRounds);
+      await prisma.user.updateMany({
+        where: { id: userToken.userId },
+        data: {
+          password: newPassword,
+        },
+      });
+      return ResponseMessages.UPDATE_PASSWORD_SUCCESS;
+    } catch (err) {
+      throw err;
     }
   }
 };

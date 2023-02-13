@@ -45,4 +45,13 @@ module.exports = class AuthService {
       throw err;
     }
   }
+
+  async resetPassword(token, password) {
+    try {
+      const response = await repository.resetPassword(token, password);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 };

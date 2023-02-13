@@ -1,15 +1,20 @@
 const config = require('../config/auth.config');
 const sgMail = require('@sendgrid/mail');
+
 sgMail.setApiKey(config.SENDGRID_API_KEY);
+
 const sendEmail = (link) => {
   const msg = {
-    to: config.EMAIL_FROM, // Change to your recipient
-    from: config.EMAIL_FROM, // Change to your verified sender
-    subject: 'Reset Password',
+    //When testing locally check spam in email
+    to: config.VERIFIED_SENDER, // Change to your recipient
+    from: config.VERIFIED_SENDER, // Change to your verified sender
+    subject: 'Reset Your Password',
     html:
-      '<p>You requested for reset password, kindly use this <a href=" ' +
+      '<p>We have received a request to reset your password.</p>' +
+      '<p>Please click on this link within the next 10 minutes to reset your password. </p>' +
+      '<a href=" ' +
       link +
-      '">link</a> to reset your password</p>',
+      '">link</a>',
   };
   sgMail.send(msg, function (error, result) {
     if (error) {
@@ -20,4 +25,4 @@ const sendEmail = (link) => {
   });
 };
 
-module.exports = sendEmail;
+module.exports = { sendEmail };

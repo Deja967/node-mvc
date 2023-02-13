@@ -8,10 +8,11 @@ const BaseError = require('../utils/baseError');
 const { setCookie } = require('../middleware/cookie.auth');
 const userLoginResponse = require('../domain/login.user.response');
 const { verifyRefreshToken } = require('../middleware/verify.refresh.token');
+const { validateSignUp, validateLogin } = require('../middleware/validation');
 
 router.post(
   RouteEndPoints.REGISTER_USER,
-  // validation.signUpValidator,
+  validateSignUp,
   checkDuplicateEmail,
   async (req, res) => {
     const { email, password } = req.body;
@@ -23,8 +24,6 @@ router.post(
       res.status(httpStatusCodes.OK).send(response);
     } catch (err) {
       if (err instanceof BaseError) {
-        console.log('err :', err);
-
         res.status(err.statusCode).send({
           title: err.title,
           status: err.statusCode,
@@ -36,8 +35,9 @@ router.post(
 );
 
 router.post(
+  //todo: add last login
   RouteEndPoints.LOGIN_USER,
-  // validation.signInValidator,
+  validateLogin,
   async (req, res) => {
     const { email, password } = req.body;
     try {

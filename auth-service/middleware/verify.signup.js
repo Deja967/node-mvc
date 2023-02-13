@@ -14,7 +14,6 @@ const checkDuplicateEmail = async (req, res, next) => {
       throw new Api409Error();
     }
   } catch (err) {
-    console.log('err: ', err);
     next(
       res.status(err.statusCode).send({
         title: err.title,

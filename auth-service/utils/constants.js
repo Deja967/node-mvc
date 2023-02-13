@@ -14,6 +14,7 @@ const ResponseMessages = {
 };
 
 const ErrorMessages = {
+  BAD_REQUEST: 'Bad Request',
   AUTH_ERROR: 'Authorization Error',
   EXIST_ERROR: 'Already Exist',
   NOT_FOUND_ERROR: 'Not Found',

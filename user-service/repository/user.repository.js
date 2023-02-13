@@ -51,7 +51,6 @@ class userRepository {
         addresses,
         user.dataValues.phone
       );
-      console.log(responseBody);
       return responseBody;
     } catch (err) {
       throw err;

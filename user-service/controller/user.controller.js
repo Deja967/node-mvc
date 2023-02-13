@@ -1,6 +1,4 @@
 const express = require('express');
-const { checkDuplicateEmail } = require('../middleware/verify.signup');
-const { setCookie } = require('../middleware/cookie.auth');
 const { verifyToken } = require('../middleware/cookie.jwt.auth');
 const { RouteEndPoints, ErrorMessages } = require('../utils/constants');
 const router = express.Router();

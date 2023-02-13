@@ -35,7 +35,6 @@ const createForgotPasswordToken = async (userId) => {
   });
 
   if (oldToken.length === 0) {
-    console.log('no token found to delete');
   } else {
     await prisma.forgotToken.deleteMany({
       where: {

@@ -14,70 +14,6 @@ const User = db.db.user;
 const Address = db.db.address;
 
 class userRepository {
-  async createNewUser({
-    first_name,
-    last_name,
-    email,
-    password,
-    date_of_birth,
-    address,
-    phone,
-  }) {
-    const user = await User.create({
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      password: bcrypt.hashSync(password, saltRounds),
-      date_of_birth: date_of_birth,
-      phone: phone,
-    });
-    await Address.create({
-      address: address[0].address,
-      unit: address[0].unit,
-      city: address[0].city,
-      state: address[0].state,
-      zip_code: address[0].zip,
-      userInformationId: user.id,
-    });
-    return user;
-  }
-  catch(err) {
-    console.log(err);
-  }
-
-  async getUserInfo({ email, password }) {
-    try {
-      const user = await User.findOne({
-        where: {
-          email: email,
-        },
-      });
-      const isPasswordValid = bcrypt.compareSync(
-        password,
-        user.dataValues.password
-      );
-      if (!user || !isPasswordValid) {
-        throw new Api401Error();
-      }
-      await User.update(
-        {
-          last_login: constants.nodeDate,
-        },
-        {
-          where: {
-            id: user.dataValues.id,
-          },
-        }
-      );
-      const data = {
-        email: user.dataValues.email,
-        id: user.dataValues.id,
-      };
-      return data;
-    } catch (err) {
-      throw err;
-    }
-  }
   async fetchAllUserInfo({ email }) {
     try {
       const user = await User.findOne({
@@ -95,17 +31,28 @@ class userRepository {
         order: [['createdAt', 'DESC']],
       });
       if (!userAddress) {
-        const data = {
-          user,
-        };
-        return data;
-      } else {
-        const data = {
-          user,
-          userAddress,
-        };
-        return data;
+        throw new Api404Error();
       }
+      let addresses = userAddress.map((address) => {
+        return new getUserAddress(
+          address.address,
+          address.unit,
+          address.city,
+          address.state,
+          address.zip_code
+        );
+      });
+
+      const responseBody = new getUserResponse(
+        user.dataValues.first_name,
+        user.dataValues.last_name,
+        user.dataValues.email,
+        user.dataValues.date_of_birth,
+        addresses,
+        user.dataValues.phone
+      );
+      console.log(responseBody);
+      return responseBody;
     } catch (err) {
       throw err;
     }

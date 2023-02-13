@@ -5,6 +5,8 @@ const config = require('../config/auth.config');
 const short = require('short-uuid');
 const Api404Error = require('../utils/errors/404');
 const Api401Error = require('../utils/errors/401');
+const httpStatusCodes = require('./httpStatusCodes');
+const { ErrorMessages } = require('../utils/constants');
 
 const createRefreshToken = async (userId) => {
   const expiredAt = new Date();
@@ -25,32 +27,33 @@ const createRefreshToken = async (userId) => {
     });
     return refreshToken.refresh_token;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
 const deleteIfExpired = async (token) => {
   try {
-    const refreshToken = await prisma.refreshToken.findFirst({
+    const findTokenToDelete = await prisma.refreshToken.deleteMany({
       where: {
         refresh_token: token,
       },
     });
-    if (!refreshToken) {
-      throw new Api404Error();
-    }
-    const isExpired = refreshToken.expiration_date;
-    if (isExpired < new Date().getTime()) {
-      prisma.refreshToken.delete({
+
+    if (findTokenToDelete.count === 0) {
+      return new Api404Error(
+        ErrorMessages.NOT_FOUND_ERROR,
+        httpStatusCodes.NOT_FOUND,
+        'Refresh token not found'
+      );
+    } else {
+      await prisma.refreshToken.deleteMany({
         where: {
           refresh_token: token,
         },
       });
       throw new Api401Error();
     }
-    return refreshToken.userId;
   } catch (err) {
-    console.log('err :', err);
     throw err;
   }
 };

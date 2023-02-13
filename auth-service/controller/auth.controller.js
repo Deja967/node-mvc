@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const AuthService = require('../service/auth.service');
 const service = new AuthService();
-// const { createRefreshToken } = require('../middleware/create.refresh.token');
 const { checkDuplicateEmail } = require('../middleware/verify.signup');
 const { RouteEndPoints, ErrorMessages } = require('../utils/constants');
 const httpStatusCodes = require('../utils/httpStatusCodes');

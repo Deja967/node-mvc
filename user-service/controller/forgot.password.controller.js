@@ -1,8 +1,5 @@
 const router = require('express').Router();
 const constants = require('../utils/constants');
-const {
-  createForgotPasswordToken,
-} = require('../middleware/create.forgot.password.token');
 const ForgotPasswordService = require('../services/forgot.password.service');
 const service = new ForgotPasswordService();
 

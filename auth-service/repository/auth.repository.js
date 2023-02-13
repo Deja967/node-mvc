@@ -67,16 +67,20 @@ module.exports = class AuthRepository {
 
   async newRefreshToken(token) {
     try {
-      const user = await deleteIfExpired(token);
-      console.log('user :', user);
-
-      let newAccessToken = jwt.sign({ id: user }, config.accessTokenSecret, {
-        expiresIn: '24h',
+      const user = await prisma.refreshToken.findFirst({
+        where: {
+          refresh_token: token,
+        },
       });
+      let newAccessToken = jwt.sign(
+        { id: user.userId },
+        config.accessTokenSecret,
+        {
+          expiresIn: '24h',
+        }
+      );
       return new NewAccessToken(newAccessToken);
     } catch (err) {
-      console.log('err 2: ', err);
-
       throw err;
     }
   }

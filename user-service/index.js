@@ -24,7 +24,6 @@ app.use(
 
 app.use(cookieParser());
 
-app.use('/', forgotPasswordController);
 app.use('/', usersController);
 app.use('/', userAddressController);
 app.use('/', refreshController);

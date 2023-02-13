@@ -1,6 +1,5 @@
 const express = require('express');
 const { checkDuplicateEmail } = require('../middleware/verify.signup');
-const { createRefreshToken } = require('../middleware/create.refresh.token');
 const { setCookie } = require('../middleware/cookie.auth');
 const { verifyToken } = require('../middleware/cookie.jwt.auth');
 const validation = require('../middleware/validation');

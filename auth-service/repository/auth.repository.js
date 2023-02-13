@@ -1,11 +1,12 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const config = require('../config/auth.config');
 const jwt = require('jsonwebtoken');
 
 const short = require('short-uuid');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
 const CreateNewUser = require('../domain/create.user.response');
 const NewAccessToken = require('../domain/new.access.token');
 const { ResponseMessages, ErrorMessages } = require('../utils/constants');

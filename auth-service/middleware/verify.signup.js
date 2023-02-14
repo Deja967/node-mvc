@@ -15,9 +15,9 @@ const checkDuplicateEmail = async (req, res, next) => {
     }
   } catch (err) {
     next(
-      res.status(err.statusCode).send({
+      res.status(err.code).send({
         title: err.title,
-        status: err.statusCode,
+        status: err.code,
         error: err.description,
       })
     );

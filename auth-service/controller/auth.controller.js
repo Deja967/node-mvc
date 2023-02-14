@@ -28,9 +28,9 @@ router.post(
       res.status(httpStatusCodes.OK).send(response);
     } catch (err) {
       if (err instanceof BaseError) {
-        res.status(err.statusCode).send({
+        res.status(err.code).send({
           title: err.title,
-          status: err.statusCode,
+          status: err.code,
           error: err.description,
         });
       }
@@ -55,9 +55,9 @@ router.post(
         .send(new userLoginResponse(response.email, token, response.refresh));
     } catch (err) {
       if (err instanceof BaseError) {
-        res.status(err.statusCode).send({
+        res.status(err.code).send({
           title: err.title,
-          status: err.statusCode,
+          status: err.code,
           error: err.description,
         });
       }
@@ -75,9 +75,9 @@ router.get(
       return res.status(httpStatusCodes.OK).send(response);
     } catch (err) {
       if (err instanceof BaseError) {
-        res.status(err.statusCode).send({
+        res.status(err.code).send({
           title: err.title,
-          status: err.statusCode,
+          status: err.code,
           error: err.description,
         });
       }

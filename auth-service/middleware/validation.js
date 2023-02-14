@@ -39,8 +39,9 @@ const validateSignUp = (req, res, next) => {
           )
       );
     }
+    next();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 

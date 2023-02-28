@@ -27,6 +27,10 @@ const ResponseMessages = {
   COMMENT_ADD_SUCCESS: 'Comment added successfully',
   COMMENT_UPDATE_SUCCESS: 'Comment updated successfully',
   COMMENT_DELETE_SUCCESS: 'Comment deleted successfully',
+
+  LIKE_ADD_SUCCESS: 'Like added successfully',
+  LIKE_UPDATE_SUCCESS: 'Like updated successfully',
+  LIKE_DELETE_SUCCESS: 'Like deleted successfully',
 };
 
 const ErrorMessages = {
@@ -44,8 +48,8 @@ const ErrorMessages = {
   COMMENT_EXISTS: 'Comment already exists',
   COMMENT_NOT_FOUND: 'Comment not found',
 
-  LIKE_EXISTS: 'like already exists',
-  LIKE_NOT_FOUND: 'like not found',
+  LIKE_EXISTS: 'Like already exists',
+  LIKE_NOT_FOUND: 'Like not found',
 };
 
 const nodeDate = new Date().toJSON().slice(0, 19).replace('T', ' ');

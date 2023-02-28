@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const setCookie = async (res, userId) => {
   const token = jwt.sign({ id: userId }, config.accessTokenSecret, {
@@ -8,8 +10,7 @@ const setCookie = async (res, userId) => {
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: false,
-    maxAge: 30000,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: config.MAX_AGE,
     withCredentials: true,
   });
   return token;

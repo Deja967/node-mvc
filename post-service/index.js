@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const commentController = require('./controller/comment.controller');
 const postController = require('./controller/post.controller');
 const likeController = require('./controller/like.controller');
 const config = require('./config/auth.config');
@@ -18,6 +19,7 @@ app.use(
 );
 app.use(cookieParser());
 
+app.use('/', commentController);
 app.use('/', postController);
 app.use('/', likeController);
 

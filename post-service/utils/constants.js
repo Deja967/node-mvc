@@ -50,6 +50,8 @@ const ErrorMessages = {
 
   LIKE_EXISTS: 'Like already exists',
   LIKE_NOT_FOUND: 'Like not found',
+
+  DOES_NOT_EXIST: 'Record to delete does not exist.',
 };
 
 const nodeDate = new Date().toJSON().slice(0, 19).replace('T', ' ');

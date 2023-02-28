@@ -30,14 +30,15 @@ module.exports = class LikeService {
   }
 
   async removeCommentLikes(userId, likeId, commentId) {
-    const response = await repository.removeCommentLikes(
-      userId,
-      likeId,
-      commentId
-    );
-    if (response === 'Comment does not exist') {
-      return 'Comment does not exist';
+    try {
+      const response = await repository.removeCommentLikes(
+        userId,
+        likeId,
+        commentId
+      );
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return response;
   }
 };

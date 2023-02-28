@@ -65,13 +65,23 @@ router.delete(
   RouteEndPoints.DELETE_COMMENT_LIKE,
   verifyToken,
   async (req, res) => {
-    const { user_id, like_id, comment_id } = req.body;
-    const response = await service.removeCommentLikes(
-      user_id,
-      like_id,
-      comment_id
-    );
-    return res.status(200).send({ message: response });
+    try {
+      const { user_id, like_id, comment_id } = req.body;
+      const response = await service.removeCommentLikes(
+        user_id,
+        like_id,
+        comment_id
+      );
+      return res.status(200).send({ message: response });
+    } catch (err) {
+      if (err instanceof BaseError) {
+        res.status(err.code).send({
+          title: err.title,
+          status: err.code,
+          error: err.description,
+        });
+      }
+    }
   }
 );
 module.exports = router;

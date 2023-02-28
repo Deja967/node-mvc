@@ -6,6 +6,7 @@ const { ResponseMessages, ErrorMessages } = require('../utils/constants');
 
 const Api404Error = require('../utils/errors/404');
 const Api409Error = require('../utils/errors/409');
+const httpStatusCodes = require('../utils/httpStatusCodes');
 
 module.exports = class LikeRepository {
   async updatePostLikes(userId, postId) {
@@ -72,7 +73,7 @@ module.exports = class LikeRepository {
       const postLike = await prisma.likes.deleteMany({
         where: { id: likeId, userId: userId },
       });
-      console.log(postLike);
+
       if (postLike.count === 0) {
         const error = new Api404Error();
         error.description = ErrorMessages.LIKE_NOT_FOUND;
@@ -86,25 +87,14 @@ module.exports = class LikeRepository {
 
   async updateCommentLikes(userId, commentId) {
     try {
-      const findComment = await prisma.comment.findMany({
-        where: {
-          id: commentId,
-        },
-      });
-      if (findComment.length === 0) {
-        const error = new Api409Error();
-        error.description = ErrorMessages.COMMENT_NOT_FOUND;
-        throw error;
-      }
-
-      const comment_like_user = await prisma.likesOnComments.findMany({
+      const findCommentLike = await prisma.likesOnComments.findMany({
         where: {
           commentId: commentId,
           assignedBy: userId,
         },
       });
-      console.log(comment_like_user.length);
-      if (findComment.length > 0) {
+
+      if (findCommentLike.length > 0) {
         const error = new Api409Error();
         error.description = ErrorMessages.LIKE_EXISTS;
         throw error;
@@ -132,31 +122,27 @@ module.exports = class LikeRepository {
       });
       return ResponseMessages.LIKE_ADD_SUCCESS;
     } catch (err) {
-      console.error(err);
       throw err;
     }
   }
 
   async removeCommentLikes(userId, likeId, commentId) {
-    //todo: add extra query to check if like exists
-    const response = await prisma.$transaction(async (transaction) => {
-      const doesLikeExist = await transaction.likes.delete({
-        where: { id: likeId },
+    try {
+      const doesLikeExist = await prisma.likes.deleteMany({
+        where: { id: likeId, userId: userId },
       });
-      //todo: check this logic later
-      process.on('unhandledRejection', (error) => {
-        return 'like does not exist';
-      });
-      return transaction.likesOnComments.deleteMany({
-        where: {
-          //make sure id comes comments
-          likeId: likeId,
-          commentId: commentId,
-          assignedBy: userId,
-        },
-      });
-    });
-    return 'Like removed from comment';
+      console.log(doesLikeExist);
+      if (doesLikeExist.count === 0) {
+        throw new Api404Error(
+          ErrorMessages.NOT_FOUND_ERROR,
+          httpStatusCodes.NOT_FOUND,
+          ErrorMessages.DOES_NOT_EXIST
+        );
+      }
+      return ResponseMessages.LIKE_DELETE_SUCCESS;
+    } catch (err) {
+      throw err;
+    }
   }
 };
 

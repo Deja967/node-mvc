@@ -1,34 +1,58 @@
-//endpoints
-const getAllPostsFromAllUsers = '/api/get-all-post';
-const getAllPostsFromSingleUser = '/api/get-all-user-post';
-const getSinglePost = '/api/get-one-post';
-const addNewPost = '/api/add-post';
-const deletePost = '/api/delete-post';
-const updatePost = '/api/update-post';
+const RouteEndPoints = {
+  ADD_POST: '/api/add-post',
+  ADD_COMMENT: '/api/add-comment',
+  ADD_POST_LIKE: '/api/update-post-likes',
 
-//endpoints for likes
-const updateCommentLikes = '/api/update-comment-likes';
-const removeCommentLikes = '/api/remove-comment-likes';
-const updatePostLikes = '/api/update-post-likes';
-const removePostLikes = '/api/remove-post-likes';
+  UPDATE_POST: '/api/update-post',
+  UPDATE_POST_LIKE: '/api/update-post-likes',
+  UPDATE_COMMENT: '/api/update-comment',
+  UPDATE_COMMENT_LIKE: '/api/update-comment-likes',
 
-//endpoints for comments
-const addComment = '/api/add-comment';
-const updateComment = '/api/update-comment';
-const deleteComment = '/api/delete-comment';
+  DELETE_POST: '/api/delete-post',
+  DELETE_COMMENT: '/api/delete-comment',
 
+  DELETE_POST_LIKE: '/api/remove-post-likes',
+  DELETE_COMMENT_LIKE: '/api/remove-comment-likes',
+
+  GET_ALL_POSTS: '/api/get-all-post',
+  GET_ALL_POSTS_FROM_USER: '/api/get-all-user-post',
+  GET_POST: '/api/get-one-post',
+};
+
+const ResponseMessages = {
+  POST_ADD_SUCCESS: 'Post added successfully',
+  POST_UPDATE_SUCCESS: 'Post updated successfully',
+  POST_DELETE_SUCCESS: 'Post deleted successfully',
+
+  COMMENT_ADD_SUCCESS: 'Comment added successfully',
+  COMMENT_UPDATE_SUCCESS: 'Comment updated successfully',
+  COMMENT_DELETE_SUCCESS: 'Comment deleted successfully',
+};
+
+const ErrorMessages = {
+  BAD_REQUEST: 'Bad Request',
+  AUTH_ERROR: 'Authorization Error',
+  EXIST_ERROR: 'Already Exist',
+  NOT_FOUND_ERROR: 'Not Found',
+
+  USER_EXISTS: 'User with this email already exists',
+  USER_NOT_FOUND: 'No user found with this email',
+
+  POST_EXISTS: 'Post already exists',
+  POST_NOT_FOUND: 'Post not found',
+
+  COMMENT_EXISTS: 'Comment already exists',
+  COMMENT_NOT_FOUND: 'Comment not found',
+
+  LIKE_EXISTS: 'like already exists',
+  LIKE_NOT_FOUND: 'like not found',
+};
+
+const nodeDate = new Date().toJSON().slice(0, 19).replace('T', ' ');
 module.exports = {
-  getAllPostsFromAllUsers: getAllPostsFromAllUsers,
-  getAllPostsFromSingleUser: getAllPostsFromSingleUser,
-  getSinglePost: getSinglePost,
-  addNewPost: addNewPost,
-  deletePost: deletePost,
-  updatePost: updatePost,
-  updatePostLikes: updatePostLikes,
-  removePostLikes: removePostLikes,
-  updateCommentLikes: updateCommentLikes,
-  addComment: addComment,
-  updateComment: updateComment,
-  deleteComment: deleteComment,
-  removeCommentLikes: removeCommentLikes,
+  RouteEndPoints,
+  nodeDate: nodeDate,
+  RouteEndPoints,
+  ResponseMessages,
+  ErrorMessages,
 };

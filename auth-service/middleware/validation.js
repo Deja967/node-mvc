@@ -1,4 +1,6 @@
 const Joi = require('joi');
+const { joiPasswordExtendCore } = require('joi-password');
+const joiPassword = Joi.extend(joiPasswordExtendCore);
 const { ErrorMessages } = require('../utils/constants');
 const Api400Error = require('../utils/errors/400');
 const httpStatusCodes = require('../utils/httpStatusCodes');
@@ -12,16 +14,15 @@ const validateSignUp = (req, res, next) => {
           tlds: { allow: ['com', 'net'] },
         })
         .required(),
-      password: Joi.string()
-        .min(10)
+      password: joiPassword
+        .string()
+        .min(8)
         .max(15)
-        //needs at least 1 special character
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-          'password'
-        )
-        //underscore not valid in password
-        .invalid('_')
+        .minOfSpecialCharacters(3)
+        .minOfLowercase(2)
+        .minOfUppercase(2)
+        .minOfNumeric(2)
+        .noWhiteSpaces()
         .required(),
     });
     const { error, value } = schema.validate(req.body, { abortEarly: false });
@@ -81,16 +82,15 @@ const validateUpdatePassword = (req, res, next) => {
   try {
     const schema = Joi.object({
       token: Joi.string().required(),
-      password: Joi.string()
-        .min(10)
+      password: joiPassword
+        .string()
+        .min(8)
         .max(15)
-        //needs at least 1 special character
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-          'password'
-        )
-        //underscore not valid in password
-        .invalid('_')
+        .minOfSpecialCharacters(3)
+        .minOfLowercase(2)
+        .minOfUppercase(2)
+        .minOfNumeric(2)
+        .noWhiteSpaces()
         .required(),
     });
     const { error, value } = schema.validate(req.body, { abortEarly: false });

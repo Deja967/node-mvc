@@ -1,6 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { ErrorMessages } = require('../utils/constants');
 const Api409Error = require('../utils/errors/409');
 
 const checkDuplicateEmail = async (req, res, next) => {

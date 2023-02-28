@@ -1,7 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const short = require('short-uuid');
-
+const { ErrorMessages, ResponseMessages } = require('../utils/constants');
+const httpStatusCodes = require('../utils/httpStatusCodes');
+const Api404Error = require('../utils/errors/404');
 module.exports = class CommentRepository {
   async createComment(userId, postId, comment) {
     try {
@@ -11,8 +13,9 @@ module.exports = class CommentRepository {
         },
       });
       if (!findPost) {
-        console.log('its not here');
-        return 'Post does not exist';
+        const error = new Api404Error();
+        error.description = ErrorMessages.POST_NOT_FOUND;
+        throw error;
       }
       const addComment = await prisma.comment.create({
         data: {
@@ -26,9 +29,9 @@ module.exports = class CommentRepository {
           },
         },
       });
-      return 'Comment added to post';
+      return ResponseMessages.COMMENT_ADD_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -43,43 +46,70 @@ module.exports = class CommentRepository {
           message: newComment,
         },
       });
-      if (response.count === 1) {
-        return 'Comment updated';
+      if (response.count === 0) {
+        const error = new Api404Error();
+        error.description = ErrorMessages.COMMENT_NOT_FOUND;
+        throw error;
       }
-      return 'Comment not found';
+      return ResponseMessages.COMMENT_UPDATE_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
   async deleteComment(userId, commentId) {
-    const likes = await prisma.likesOnComments.findMany({
-      where: {
-        commentId: commentId,
-      },
-      select: {
-        likeId: true,
-      },
-    });
-
-    //deleting likes and comments will both delete the LikesOnComments but LikesOnComments wont delete them
-    const removeAssociatedLikes = await prisma.$transaction(
-      async (transaction) => {
-        await transaction.likes.deleteMany({
-          where: { id: { in: likes.map((like) => like.likeId) } },
-        });
-      }
-    );
-
-    if (!removeAssociatedLikes) {
-      await prisma.comment.deleteMany({
+    try {
+      const likes = await prisma.likesOnComments.findMany({
         where: {
-          id: commentId,
-          userId: userId,
+          commentId: commentId,
+        },
+        select: {
+          likeId: true,
         },
       });
-      return 'Comment deleted';
+
+      if (likes.length === 0) {
+        const comment = await prisma.comment.deleteMany({
+          where: {
+            id: commentId,
+            userId: userId,
+          },
+        });
+
+        if (comment.count === 0) {
+          const error = new Api404Error();
+          error.description = ErrorMessages.COMMENT_NOT_FOUND;
+          throw error;
+        }
+        return ResponseMessages.COMMENT_DELETE_SUCCESS;
+      }
+
+      if (likes.length > 0) {
+        //deleting likes and comments will both delete the LikesOnComments but LikesOnComments wont delete them
+        const removeAssociatedLikes = await prisma.$transaction(
+          async (transaction) => {
+            await transaction.likes.deleteMany({
+              where: { id: { in: likes.map((like) => like.likeId) } },
+            });
+          }
+        );
+
+        const comment = await prisma.comment.deleteMany({
+          where: {
+            id: commentId,
+            userId: userId,
+          },
+        });
+
+        if (comment.count === 0) {
+          const error = new Api404Error();
+          error.description = ErrorMessages.COMMENT_NOT_FOUND;
+          throw error;
+        }
+        return ResponseMessages.COMMENT_DELETE_SUCCESS;
+      }
+    } catch (err) {
+      throw err;
     }
-    return 'Something went wrong, comment not deleted';
   }
 };

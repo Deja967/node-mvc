@@ -8,8 +8,12 @@ const axios = require('axios');
 
 module.exports = class PostService {
   async getOnePost(postId) {
-    const response = await repository.getOnePost(postId);
-    return response;
+    try {
+      const response = await repository.getOnePost(postId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async getAllPostsFromAllUsers() {
@@ -33,11 +37,12 @@ module.exports = class PostService {
   }
 
   async updatePost(userId, postId, new_message) {
-    const response = await repository.updatePost(userId, postId, new_message);
-    if (response === 'Post does not exist') {
-      return 'Post does not exist';
+    try {
+      const response = await repository.updatePost(userId, postId, new_message);
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return new UpdatePost(response, postId, userId, new_message);
   }
 
   async deletePost(userId, postId) {

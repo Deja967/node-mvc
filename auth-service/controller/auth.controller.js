@@ -92,7 +92,15 @@ router.post(RouteEndPoints.FORGOT_PASSWORD, async (req, res) => {
       email,
     });
     return res.status(httpStatusCodes.OK).send(response);
-  } catch (err) {}
+  } catch (err) {
+    if (err instanceof BaseError) {
+      res.status(err.code).send({
+        title: err.title,
+        status: err.code,
+        error: err.description,
+      });
+    }
+  }
 });
 
 router.post(

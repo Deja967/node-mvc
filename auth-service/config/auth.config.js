@@ -8,6 +8,7 @@ const config = {
   BASE_URL: process.env.BASE_URL,
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   VERIFIED_SENDER: process.env.VERIFIED_SENDER,
+  MAX_AGE: process.env.MAX_AGE,
 };
 
 module.exports = config;

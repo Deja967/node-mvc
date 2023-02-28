@@ -6,9 +6,9 @@ const catchError = async (err, res, token) => {
   try {
     const deleteError = await deleteIfExpired(token);
     if (deleteError) {
-      return res.status(deleteError.statusCode).send({
+      return res.status(deleteError.code).send({
         title: deleteError.title,
-        statusCode: deleteError.statusCode,
+        code: deleteError.code,
         description: deleteError.description,
       });
     }

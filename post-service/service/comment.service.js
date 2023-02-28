@@ -3,21 +3,33 @@ const repository = new CommentRepository();
 
 module.exports = class CommentService {
   async addComment(userId, postId, comment) {
-    const response = await repository.createComment(userId, postId, comment);
-    return response;
+    try {
+      const response = await repository.createComment(userId, postId, comment);
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async updateComment(userId, commentId, editedComment) {
-    const response = await repository.updateComment(
-      userId,
-      commentId,
-      editedComment
-    );
-    return response;
+    try {
+      const response = await repository.updateComment(
+        userId,
+        commentId,
+        editedComment
+      );
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async deleteComment(userId, commentId) {
-    const response = await repository.deleteComment(userId, commentId);
-    return response;
+    try {
+      const response = await repository.deleteComment(userId, commentId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
   }
 };

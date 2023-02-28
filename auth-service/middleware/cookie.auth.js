@@ -10,8 +10,7 @@ const setCookie = async (res, userId) => {
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: false,
-    maxAge: 30000,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: config.MAX_AGE,
     withCredentials: true,
   });
   return token;

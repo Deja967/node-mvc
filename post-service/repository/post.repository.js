@@ -5,56 +5,62 @@ const PostResponse = require('../domain/get.post.response');
 const GetLikes = require('../domain/get.likes.response');
 const { all } = require('../controller/post.controller');
 const GetComments = require('../domain/get.comments.response');
+const { ErrorMessages, ResponseMessages } = require('../utils/constants');
+const Api404Error = require('../utils/errors/404');
 
 module.exports = class PostRepository {
   async getOnePost(postId) {
     try {
-      const allPost = await prisma.post.findMany({
+      const post = await prisma.post.findFirst({
         where: {
           id: postId,
         },
         include: {
+          comment: { include: { likes: true } },
           likes: { include: { like: true } },
         },
       });
-
+      if (!post) {
+        const error = new Api404Error();
+        error.description = ErrorMessages.POST_NOT_FOUND;
+        throw error;
+      }
       const response = JSON.parse(
         JSON.stringify(
-          allPost.map((user) => {
-            return new PostResponse(
-              user.id,
-              user.createdAt,
-              user.updatedAt,
-              user.message,
-              user.userId,
-              user.commentId,
-              user.likes.map(
-                (like) => new GetLikes(like.like.userId, like.like.createdAt)
-              )
-            );
-          })
+          new PostResponse(
+            post.id,
+            post.createdAt,
+            post.updatedAt,
+            post.message,
+            post.userId,
+            post.comment.map(
+              (getComment) =>
+                new GetComments(
+                  getComment.userId,
+                  getComment.createdAt,
+                  getComment.message,
+                  getComment.likes.map(
+                    (like) => new GetLikes(like.assignedBy, like.assignedAt)
+                  )
+                )
+            ),
+            post.likes.map(
+              (like) => new GetLikes(like.like.userId, like.like.createdAt)
+            )
+          )
         )
       );
       return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
   async getAllPostsFromAllUsers() {
     try {
       const allPost = await prisma.post.findMany();
-      return allPost.map((postData) => {
-        return new PostResponse(
-          postData.id,
-          postData.createdAt,
-          postData.updatedAt,
-          postData.message,
-          postData.userId,
-          postData.commentId,
-          postData.likeId
-        );
-      });
+      console.log(allPost);
+      return allPost;
     } catch (err) {
       console.log(err);
     }
@@ -105,6 +111,7 @@ module.exports = class PostRepository {
   }
 
   async createNewPost(email, userId, message) {
+    // todo: get id from email
     try {
       const newPost = await prisma.post.create({
         data: {
@@ -132,11 +139,13 @@ module.exports = class PostRepository {
         },
       });
       if (response.count === 0) {
-        return 'Post does not exist';
+        const error = new Api404Error();
+        error.description = ErrorMessages.POST_NOT_FOUND;
+        throw error;
       }
-      return 'Post updated successfully';
+      return ResponseMessages.POST_UPDATE_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -179,10 +188,10 @@ module.exports = class PostRepository {
         userId: userId,
       },
     });
-    console.log('response', response);
+
     if (response.count === 1) {
-      return 'post deleted successfully';
+      return ResponseMessages.POST_DELETE_SUCCESS;
     }
-    return 'post does not exist / post not deleted';
+    return ErrorMessages.POST_NOT_FOUND;
   }
 };

@@ -89,6 +89,11 @@ module.exports = class AuthRepository {
   async forgotPassword({ email }) {
     try {
       const user = await prisma.user.findFirst({ where: { email } });
+      {
+        if (!user) {
+          throw new Api404Error();
+        }
+      }
       const userId = user.id;
       const token = await createForgotPasswordToken(userId);
       const link = `${config.BASE_URL}/reset-password?token=${token.forgot_token}&id=${userId}`;
@@ -100,7 +105,7 @@ module.exports = class AuthRepository {
       };
       return data;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 

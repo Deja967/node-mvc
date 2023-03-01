@@ -3,38 +3,42 @@ const repository = new LikeRepository();
 
 module.exports = class LikeService {
   async updatePostLikes(userId, postId) {
-    const response = await repository.updatePostLikes(userId, postId);
-    if (response === 'Post does not exist') {
-      return 'Post does not exist';
+    try {
+      const response = await repository.updatePostLikes(userId, postId);
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return response;
   }
 
   async removePostLikes(userId, likeId, postId) {
-    const response = await repository.removePostLikes(userId, likeId, postId);
-    if (response === 'Post does not exist') {
-      return 'Post does not exist';
+    try {
+      const response = await repository.removePostLikes(userId, likeId, postId);
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return response;
   }
 
   async updateCommentLikes(userId, commentId) {
-    const response = await repository.updateCommentLikes(userId, commentId);
-    if (response === 'Comment does not exist') {
-      return 'Comment does not exist';
+    try {
+      const response = await repository.updateCommentLikes(userId, commentId);
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return response;
   }
 
   async removeCommentLikes(userId, likeId, commentId) {
-    const response = await repository.removeCommentLikes(
-      userId,
-      likeId,
-      commentId
-    );
-    if (response === 'Comment does not exist') {
-      return 'Comment does not exist';
+    try {
+      const response = await repository.removeCommentLikes(
+        userId,
+        likeId,
+        commentId
+      );
+      return response;
+    } catch (err) {
+      throw err;
     }
-    return response;
   }
 };

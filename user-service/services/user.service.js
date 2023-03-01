@@ -1,13 +1,6 @@
 const userRepository = require('../repository/user.repository');
-const newUserResponse = require('../domain/create.user.response');
-const getUserResponse = require('../domain/get.user.response');
 const db = require('../schema');
-const getUserAddress = require('../domain/get.user.address');
-const userLoginResponse = require('../domain/login.user.response');
-
 const constants = require('../utils/constants');
-const { add } = require('lodash');
-const getUserPosts = require('../domain/get.user.post.response');
 
 class userService {
   constructor() {

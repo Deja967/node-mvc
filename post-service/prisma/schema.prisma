@@ -43,7 +43,7 @@ model Likes {
 }
 
 model LikesOnPosts {
-  post       Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post       Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId     String 
   like       Likes? @relation(fields: [likeId], references: [id], onDelete: Cascade)
   likeId     String
@@ -54,13 +54,13 @@ model LikesOnPosts {
 }
 
 model LikesOnComments {
-  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId  String 
-  like       Likes?   @relation(fields: [likeId], references: [id], onDelete: Cascade) 
   likeId     String
   assignedAt DateTime @default(now())
   assignedBy String
-
+  comment    Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  like       Likes?   @relation(fields: [likeId], references: [id], onDelete: Cascade) 
+  
   @@id([commentId, likeId])
 }
 

@@ -1,13 +1,7 @@
 const db = require('../schema');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const axios = require('axios');
 const constants = require('../utils/constants');
-const { find } = require('lodash');
-const e = require('express');
 const getUserResponse = require('../domain/get.user.response');
 const getUserAddress = require('../domain/get.user.address');
-const Api401Error = require('../utils/errors/401');
 const Api404Error = require('../utils/errors/404');
 
 const User = db.db.user;

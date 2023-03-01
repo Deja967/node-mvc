@@ -5,6 +5,8 @@ const { verifyToken } = require('../middleware/cookie.jwt.auth');
 
 const UserAddressService = require('../services/user.address.service');
 const { RouteEndPoints } = require('../utils/constants');
+const BaseError = require('../utils/baseError');
+const httpStatusCodes = require('../utils/httpStatusCodes');
 const service = new UserAddressService();
 
 router.post(RouteEndPoints.ADD_ADDRESS, verifyToken, async (req, res) => {
@@ -12,10 +14,15 @@ router.post(RouteEndPoints.ADD_ADDRESS, verifyToken, async (req, res) => {
   const address = req.body.address;
   try {
     const response = await service.addNewAddress(email, address);
-    console.log(response);
-    return res.status(200).send({ message: response });
+    return res.status(httpStatusCodes.OK).send({ message: response });
   } catch (err) {
-    console.log(err);
+    if (err instanceof BaseError) {
+      res.status(err.statusCode).send({
+        title: err.title,
+        status: err.statusCode,
+        error: err.description,
+      });
+    }
   }
 });
 
@@ -27,9 +34,15 @@ router.put(
     const address = req.body.address;
     try {
       const response = await service.updateAddress(email, address);
-      return res.status(200).send({ message: response });
+      return res.status(httpStatusCodes.OK).send({ message: response });
     } catch (err) {
-      console.log(err);
+      if (err instanceof BaseError) {
+        res.status(err.statusCode).send({
+          title: err.title,
+          status: err.statusCode,
+          error: err.description,
+        });
+      }
     }
   }
 );
@@ -42,9 +55,15 @@ router.delete(
     const addressId = req.body.address_id;
     try {
       const response = await service.deleteAddress(email, addressId);
-      return res.status(200).send({ message: response });
+      return res.status(httpStatusCodes.OK).send({ message: response });
     } catch (err) {
-      console.log(err);
+      if (err instanceof BaseError) {
+        res.status(err.statusCode).send({
+          title: err.title,
+          status: err.statusCode,
+          error: err.description,
+        });
+      }
     }
   }
 );

@@ -16,32 +16,4 @@ module.exports = class getUserPosts {
     this.comment_id = comment_id;
     this.likes = likes;
   }
-
-  getPostId() {
-    return this.post_id;
-  }
-
-  getCreatedAt() {
-    return this.created_at;
-  }
-
-  getUpdatedAt() {
-    return this.updated_at;
-  }
-
-  getMessage() {
-    return this.message;
-  }
-
-  getUserId() {
-    return this.user_id;
-  }
-
-  getCommentId() {
-    return this.comment_id;
-  }
-
-  getLikeId() {
-    return this.like_id;
-  }
 };

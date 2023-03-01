@@ -7,8 +7,8 @@ const RouteEndPoints = {
   GET_USERS: '/api/get-users',
 
   ADD_ADDRESS: '/api/add-address',
-  UPDATE_USER_ADDRESS: '/api/delete-address',
-  DELETE_USER_ADDRESS: '/api/update-address',
+  UPDATE_USER_ADDRESS: '/api/update-address',
+  DELETE_USER_ADDRESS: '/api/delete-address',
 
   REFRESH_TOKEN: '/api/refresh',
 };
@@ -28,9 +28,11 @@ const ResponseMessages = {
 };
 
 const ErrorMessages = {
+  NOT_FOUND: 'Not Found',
   AUTH_ERROR: 'Authorization Error',
   USER_EXISTS: 'User already exists',
   USER_NOT_FOUND: 'No user found with this email',
+  ADDRESS_NOT_FOUND: 'No record with this address exists',
 };
 
 const nodeDate = new Date().toJSON().slice(0, 19).replace('T', ' ');

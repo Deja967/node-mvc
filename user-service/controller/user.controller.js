@@ -17,7 +17,7 @@ router.get(RouteEndPoints.GET_USER, verifyToken, async (req, res) => {
   } catch (err) {
     if (err instanceof BaseError) {
       res.status(err.statusCode).send({
-        title: 'Not Found',
+        title: err.title,
         status: err.statusCode,
         error: err.description,
       });
@@ -34,7 +34,13 @@ router.get(RouteEndPoints.GET_USERS, async (req, res) => {
     // );
     return res.status(httpStatusCodes.OK).send(response);
   } catch (err) {
-    console.log(err);
+    if (err instanceof BaseError) {
+      res.status(err.statusCode).send({
+        title: err.title,
+        status: err.statusCode,
+        error: err.description,
+      });
+    }
   }
 });
 
@@ -52,7 +58,7 @@ router.put(RouteEndPoints.UPDATE_USER, verifyToken, async (req, res) => {
   } catch (err) {
     if (err instanceof BaseError) {
       res.status(err.statusCode).send({
-        title: 'Not Found',
+        title: err.title,
         status: err.statusCode,
         error: err.description,
       });
@@ -68,7 +74,7 @@ router.delete(RouteEndPoints.DELETE_USER, verifyToken, async (req, res) => {
   } catch (err) {
     if (err instanceof BaseError) {
       res.status(err.statusCode).send({
-        title: 'Not Found',
+        title: err.title,
         status: err.statusCode,
         error: err.description,
       });

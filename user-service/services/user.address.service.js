@@ -10,27 +10,18 @@ module.exports = class UserAddressService {
   async addNewAddress(email, address) {
     try {
       const response = await this.repository.addAddress(email, address);
-      if (response == constants.doesUserExist) {
-        return constants.doesUserExist;
-      }
-      return constants.addressAddSuccess;
+      return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
   async updateAddress(email, address) {
     try {
       const response = await this.repository.updateUserAddress(email, address);
-      if (response == constants.doesUserExist) {
-        return constants.doesUserExist;
-      }
-      if (response == constants.doesAddressExist) {
-        return constants.doesAddressExist;
-      }
-      return constants.addressUpdateSuccess;
+      return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -40,16 +31,9 @@ module.exports = class UserAddressService {
         email,
         addressId
       );
-      //Extract to new method
-      if (response == constants.doesUserExist) {
-        return constants.doesUserExist;
-      }
-      if (response == constants.doesAddressExist) {
-        return constants.doesAddressExist;
-      }
-      return constants.addressDeleteSuccess;
+      return response;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 };

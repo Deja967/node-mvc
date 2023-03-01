@@ -1,5 +1,8 @@
 const db = require('../schema');
+const { ResponseMessages, ErrorMessages } = require('../utils/constants');
 const constants = require('../utils/constants');
+
+const Api404Error = require('../utils/errors/404');
 
 const User = db.db.user;
 const Address = db.db.address;
@@ -13,7 +16,7 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
 
       await address.map((address) => {
@@ -26,9 +29,9 @@ module.exports = class UserAddressRepository {
           userInformationId: user.id,
         });
       });
-      return constants.addressAddSuccess;
+      return ResponseMessages.ADDRESS_ADDED_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -40,7 +43,7 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       await address.map((address) => {
         Address.update(
@@ -59,9 +62,9 @@ module.exports = class UserAddressRepository {
           }
         );
       });
-      return constants.addressUpdateSuccess;
+      return ResponseMessages.ADDRESS_UPDATED_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -73,7 +76,7 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!user) {
-        return constants.doesUserExist;
+        throw new Api404Error();
       }
       const address = await Address.destroy({
         where: {
@@ -82,11 +85,15 @@ module.exports = class UserAddressRepository {
         },
       });
       if (!address) {
-        return constants.doesAddressExist;
+        throw new Api404Error(
+          undefined,
+          undefined,
+          ErrorMessages.ADDRESS_NOT_FOUND
+        );
       }
-      return constants.addressDeleteSuccess;
+      return ResponseMessages.ADDRESS_DELETED_SUCCESS;
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 };

@@ -1,6 +1,4 @@
 const UserAddressRepository = require('../repository/user.address.repository');
-const constants = require('../utils/constants');
-const repository = new UserAddressRepository();
 
 module.exports = class UserAddressService {
   constructor() {

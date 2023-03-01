@@ -4,16 +4,4 @@ module.exports = class userLoginResponse {
     this.access_token = access_token;
     this.refresh_token = refresh_token;
   }
-
-  getEmail() {
-    return this.email;
-  }
-
-  getAccessToken() {
-    return this.access_token;
-  }
-
-  getRefreshToken() {
-    return this.refresh_token;
-  }
 };

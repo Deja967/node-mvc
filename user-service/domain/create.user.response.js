@@ -3,12 +3,4 @@ module.exports = class createNewUser {
     this.email = email;
     this.message = message;
   }
-
-  getEmail() {
-    return this.email;
-  }
-
-  getMessage() {
-    return this.message;
-  }
 };

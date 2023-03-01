@@ -1,6 +1,5 @@
 const db = require('../schema');
 const { ResponseMessages, ErrorMessages } = require('../utils/constants');
-const constants = require('../utils/constants');
 
 const Api404Error = require('../utils/errors/404');
 
